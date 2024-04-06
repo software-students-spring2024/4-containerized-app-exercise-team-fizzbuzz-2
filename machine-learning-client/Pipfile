@@ -6,6 +6,9 @@ name = "pypi"
 [packages]
 pylint = "*"
 black = "*"
+torch = "*"
+transformers = "*"
+sentencepiece = "*"
 
 [dev-packages]
 
