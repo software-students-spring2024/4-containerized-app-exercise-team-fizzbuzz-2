@@ -8,10 +8,11 @@ from flask import Flask, render_template, redirect, url_for
 # Loading development configurations
 config = dotenv_values(".env")
 
+
 def create_app():
-    '''
-        returns a flask app
-    '''
+    """
+    returns a flask app
+    """
     # Make flask app
     app = Flask(__name__)
     app.secret_key = config["FLASK_SECRET_KEY"]
@@ -35,24 +36,24 @@ def create_app():
 
     # Main Pages
 
-    @app.route('/')
+    @app.route("/")
     def show():
-        '''
-            redirects to /home
-        '''
-        return redirect(url_for('home'))
+        """
+        redirects to /home
+        """
+        return redirect(url_for("home"))
 
-    @app.route('/home', methods=["GET", "POST"])
+    @app.route("/home", methods=["GET", "POST"])
     def home():
-        '''
-            renders the home page
-        '''
+        """
+        renders the home page
+        """
         return render_template("home.html")
 
     return app
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # use the PORT environment variable
     flask_app = create_app()
 
