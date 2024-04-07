@@ -28,16 +28,15 @@ jobs:
           pipenv run python -m pytest
   push_to_registry:
     needs: [build]
+    if: github.ref == 'refs/heads/main'
     name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - name: Check out the repo
-        # if: github.ref == 'refs/heads/main'
         uses: actions/checkout@v4
 
       - name: Log in to Docker Hub
-        # if: github.ref == 'refs/heads/main'
         uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
@@ -45,13 +44,11 @@ jobs:
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        # if: github.ref == 'refs/heads/main'
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
           images: doodyshark/se-web-app
 
       - name: Build and push Docker image
-        # if: github.ref == 'refs/heads/main'
         uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
         with:
           context: ./web-app
