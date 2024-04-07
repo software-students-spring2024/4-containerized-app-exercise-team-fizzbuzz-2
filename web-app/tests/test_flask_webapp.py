@@ -2,7 +2,6 @@
     Tests for functions used in the webapp
 '''
 
-import sys
 import pytest
 from app import create_app
 
