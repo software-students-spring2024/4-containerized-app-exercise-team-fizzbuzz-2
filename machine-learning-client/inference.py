@@ -5,6 +5,7 @@ This module contains functions for performing inference using the Speech2Text Pr
 
 Author: Firas Darwish
 """
+
 from transformers import Speech2TextProcessor, Speech2TextForConditionalGeneration
 
 # To Do: Must add recorded audio
