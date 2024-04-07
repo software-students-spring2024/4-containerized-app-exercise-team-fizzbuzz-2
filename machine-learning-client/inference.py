@@ -6,26 +6,30 @@ This module contains functions for performing inference using the Speech2Text Pr
 Author: Firas Darwish
 """
 
+from typing import AnyStr, Optional
 from transformers import Speech2TextProcessor, Speech2TextForConditionalGeneration
 
-# To Do: Must add recorded audio
-SOURCE = None
+def test_test():
+    return True
 
-model = Speech2TextForConditionalGeneration.from_pretrained(
-    "facebook/s2t-small-librispeech-asr"
-)
-processor = Speech2TextProcessor.from_pretrained("facebook/s2t-small-librispeech-asr")
+def speech2textpipeline(SOURCE: Optional[AnyStr] = None) -> Optional[AnyStr]:
+    # To Do: Must add recorded audio
 
-# add
-inputs = processor(SOURCE, sampling_rate=48000, return_tensors="pt")
-generated_ids = model.generate(
-    inputs["input_features"], attention_mask=inputs["attention_mask"]
-)
+    model = Speech2TextForConditionalGeneration.from_pretrained(
+        "facebook/s2t-small-librispeech-asr"
+    )
+    processor = Speech2TextProcessor.from_pretrained("facebook/s2t-small-librispeech-asr")
 
-transcription = processor.batch_decode(generated_ids, skip_special_tokens=True)
-# transcription is now list, for example: transcription =
-# ['mister quilter is the apostle of the middle classes and we are glad to welcome his gospel']
+    # add
+    inputs = processor(SOURCE, sampling_rate=48000, return_tensors="pt")
+    generated_ids = model.generate(
+        inputs["input_features"], attention_mask=inputs["attention_mask"]
+    )
 
-# To Do: Add code to send data back to website
+    transcription = processor.batch_decode(generated_ids, skip_special_tokens=True)
+    # transcription is now list, for example: transcription =
+    # ['mister quilter is the apostle of the middle classes and we are glad to welcome his gospel']
 
-# To Do: Add code to save transcription to mongoDB database
+    # To Do: Add code to send data back to website
+
+    # To Do: Add code to save transcription to mongoDB database
