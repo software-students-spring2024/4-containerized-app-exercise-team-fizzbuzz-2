@@ -4,10 +4,6 @@
 
 import sys
 import pytest
-
-# setting path
-sys.path.append('../web-app')
-
 from app import create_app
 
 class Tests:
