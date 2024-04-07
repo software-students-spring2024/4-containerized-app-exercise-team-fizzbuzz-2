@@ -1,0 +1,147 @@
+* {
+    margin: 0;
+    padding: 0;
+    margin-left: auto;
+    margin-right: auto;
+    font-family: "Micro 5", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+html, body {
+    margin: 0 auto;
+}
+
+html {
+    width: 100%;
+    height: 100%;
+    line-height: 1.5;
+    -webkit-text-size-adjust: 100%;
+    background-color: rgb(250, 243, 243);
+}
+
+body {
+    height: 100%;
+}
+
+.start {
+    display: flex;
+    align-items:center;
+    width: 100%;
+    height: 100%;
+}
+
+form {
+    background-color: rgb(99, 41, 92);
+    width: min(450px,50%);
+    padding: 25px;
+    border: 5px solid rgb(45, 14, 41);
+    /* border-radius: 25px; */
+    font-size: xx-large;
+}
+
+form label {
+    color: white;
+}
+
+.playBtn {
+    font-size: x-large;
+    background-color: white;
+    color: rgb(99, 41, 92);
+    border: 5px solid rgb(45, 14, 41);
+    padding: 5px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.playBtn:hover, .playBtn:active {
+    background-color: rgb(170, 110, 163);
+    color: white;
+}
+
+button {
+    margin: 10px;
+    font-size: x-large;
+    background-color: white;
+    color: rgb(99, 41, 92);
+    border: 5px solid rgb(45, 14, 41);
+    padding: 5px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+
+button:hover, button:active {
+    background-color: rgb(170, 110, 163);
+    color: white;
+}
+
+#startValues {
+    border-radius: 0px;
+    font-size: x-large;
+}
+
+div {
+    text-align: center;
+}
+
+
+h1 {
+    text-align: center;
+    width: 50%;
+    color: rgb(99, 41, 92);
+    font-size: 50px;
+    font-weight: bold;
+}
+
+.card-area {
+    width: 500px;
+    height: fit-content;
+    padding: 10px;
+}
+  
+.card {
+    color: rgb(99, 41, 92);
+    padding: 5px;
+    display: inline-block;
+    height: 180px;
+    width: 115px;
+    border-radius: 5px;
+    border: 5px solid black;
+    background-color: white;
+    rotate: 0 0 1 0deg;
+}
+
+.card-hidden {
+    padding: 5px;
+    display: inline-block;
+    height: 180px;
+    width: 115px;
+    border-radius: 5px;
+    border: 5px solid black;
+    background-color: rgb(99, 41, 92);
+    rotate: 0 0 1 0deg;
+}
+  
+.card-header {
+    font-size: large;
+    height: 20%;
+    text-align: left;
+}
+  
+.card-body {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    vertical-align: middle;
+    height: 60%;
+    font-size: xx-large;
+}
+  
+.card-footer {
+    height: 20%;
+    text-align: left;
+    rotate: 0 0 1 180deg;
+    font-size: large;
+}
