@@ -21,6 +21,7 @@ jobs:
           pipenv --python ${{ matrix.python-version }}
           pipenv install pytest
           pipenv install
+          pipenv run python -m pytest
       - name: Test with pytest
         run: |
           cd web-app
