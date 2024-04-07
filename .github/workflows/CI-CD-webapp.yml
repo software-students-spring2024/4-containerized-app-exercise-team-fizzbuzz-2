@@ -15,6 +15,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
+          cd webapp
           python -m pip install --upgrade pip
           pip install --user pipenv
           pipenv --python ${{ matrix.python-version }}
@@ -24,8 +25,10 @@ jobs:
         run: |
           pipenv run python -m pytest
   push_to_registry:
+    needs: [build]
     name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - name: Check out the repo
         # if: github.ref == 'refs/heads/main'
