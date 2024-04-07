@@ -13,6 +13,7 @@ flask-login = "*"
 passlib = "*"
 pytest = "*"
 pytest-flask = "*"
+tomli = "*"
 
 [dev-packages]
 
