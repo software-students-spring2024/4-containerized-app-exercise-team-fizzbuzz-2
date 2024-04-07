@@ -15,7 +15,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
-          cd webapp
+          cd web-app
           python -m pip install --upgrade pip
           pip install --user pipenv
           pipenv --python ${{ matrix.python-version }}
