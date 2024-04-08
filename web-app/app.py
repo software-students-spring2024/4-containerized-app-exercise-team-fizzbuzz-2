@@ -2,6 +2,7 @@
 Web-app file
 """
 
+import pymongo
 from dotenv import dotenv_values
 from flask import Flask, render_template, redirect, url_for
 
@@ -15,24 +16,29 @@ def create_app():
     """
     # Make flask app
     app = Flask(__name__)
-    app.secret_key = config["FLASK_SECRET_KEY"]
+    app.secret_key = config["WEBAPP_FLASK_SECRET_KEY"]
 
-    # # Make a connection to the database server
-    # connection = pymongo.MongoClient("class-mongodb.cims.nyu.edu", 27017,
-    #                                 username = config["USERNAME"],
-    #                                 password = config["PASSWORD"],
-    #                                 authSource = config["AUTHSOURCE"])
+    mongo_uri = (
+        f'mongodb://{config["MONGODB_USER"]}:'
+        f'{config["MONGODB_PASSWORD"]}@{config["MONGODB_HOST"]}:'
+        f'{config["MONGODB_PORT"]}?authSource={config["MONGODB_AUTHSOURCE"]}'
+    )
 
-    # # Select a specific database on the server
-    # db = connection[config["MONGO_DBNAME"]]
+    # Make a connection to the database server
+    connection = pymongo.MongoClient(mongo_uri)
 
-    # try:
-    #     # verify the connection works by pinging the database
-    #     connection.admin.command("ping")  # The ping command is cheap and does not require auth.
-    #     print(" *", "Connected to MongoDB!")  # if we get here, the connection worked!
-    # except Exception as e:
-    #     # the ping command failed, so the connection is not available.
-    #     print(" * MongoDB connection error:", e)  # debug
+    # Select a specific database on the server
+    # db = connection[config["MONGODB_NAME"]]
+
+    try:
+        # verify the connection works by pinging the database
+        connection.admin.command(
+            "ping"
+        )  # The ping command is cheap and does not require auth.
+        print(" *", "Connected to MongoDB!")  # if we get here, the connection worked!
+    except pymongo.errors.OperationFailure as e:
+        # the ping command failed, so the connection is not available.
+        print(" * MongoDB connection error:", e)  # debug
 
     # Main Pages
 
@@ -57,4 +63,4 @@ if __name__ == "__main__":
     # use the PORT environment variable
     flask_app = create_app()
 
-    flask_app.run(port=config["FLASK_PORT"])
+    flask_app.run(port=config["WEBAPP_FLASK_PORT"])

@@ -16,4 +16,4 @@ ADD . .
 EXPOSE 9696
 
 # Run app.py when the container launches
-CMD [ "python3", "inference.py"]
+CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0", "-p", "9696"]

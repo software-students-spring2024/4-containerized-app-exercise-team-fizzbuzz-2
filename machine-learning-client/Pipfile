@@ -5,13 +5,22 @@ name = "pypi"
 
 [packages]
 pylint = "*"
-black = "*"
 torch = "*"
 transformers = "*"
-sentencepiece = "*"
+datasets = "*"
 pytest = "*"
+flask = "*"
+pytest-flask = "*"
+sentencepiece = "*"
+black = "*"
+pymongo = "*"
+python-dotenv = "*"
+librosa = "*"
+soundfile = "*"
+torchaudio = "*"
 
 [dev-packages]
 
 [requires]
 python_version = "3.10"
+python_full_version = "3.10.10"
