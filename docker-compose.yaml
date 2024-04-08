@@ -1,0 +1,55 @@
+version: "3.8"
+
+services:
+  ml:
+    build: ./machine-learning-client # build the Docker image from the Dockerfile in the machine-learning-client directory
+    ports:
+      - 9696:9696 # map port 9696 of host machine to port 9696 of container
+    env_file: ./.env
+    environment:
+      - DB_HOST=mongodb_server
+      - DB_USER=$MONGODB_USER
+      - DB_PASSWORD=$MONGODB_PASSWORD
+      - DB_NAME=$MONGODB_NAME
+      - DB_PORT=$MONGODB_PORT
+      - DB_AUTHSOURCE=$MONGODB_AUTHSOURCE
+      - WEBAPP_PORT=$WEBAPP_FLASK_PORT
+      - WEBAPP_APP=$WEBAPP_FLASK_APP
+      - WEBAPP_ENV=$WEBAPP_FLASK_ENV
+      - WEBAPP_SECRET_KEY=$WEBAPP_FLASK_SECRET_KEY
+    depends_on:
+      - mongodb
+
+  web-app:
+    build: ./web-app # build the Docker image from the Dockerfile in the back-end directory
+    ports:
+      - 5000:5000 # map port 5000 of host machine to port 5000 of container
+    env_file: ./.env
+    environment:
+      - DB_HOST=mongodb_server
+      - DB_USER=$MONGODB_USER
+      - DB_PASSWORD=$MONGODB_PASSWORD
+      - DB_NAME=$MONGODB_NAME
+      - DB_PORT=$MONGODB_PORT
+      - DB_AUTHSOURCE=$MONGODB_AUTHSOURCE
+    depends_on:
+    - mongodb
+    volumes:
+      - ./uploads:/uploads # a directory on the host machine where we can store any files uploaded to the back-end container
+
+  # Database service
+  mongodb:
+    image: mongo:4.0-xenial # use a recent version of the official MongoDB image on Docker Hub
+    container_name: mongodb_server
+    ports:
+      - 27017:27017
+    env_file: ./.env
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=$MONGODB_USER
+      - MONGO_INITDB_ROOT_PASSWORD=$MONGODB_PASSWORD
+    volumes:
+      - ./mydata:/data/db
+
+# Volumes define
+volumes: 
+  mydata:
