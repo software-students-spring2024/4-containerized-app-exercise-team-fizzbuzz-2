@@ -4,7 +4,7 @@ Webapp for providing API for communicating with machine learning client
 
 import pymongo
 from dotenv import dotenv_values
-from flask import Flask, render_template, redirect, url_for, json
+from flask import Flask, redirect, url_for, json
 from datasets import load_dataset
 import inference
 
@@ -20,9 +20,11 @@ def create_app():
     app = Flask(__name__)
     app.secret_key = config["ML_FLASK_SECRET_KEY"]
 
-    mongo_uri = (f'mongodb://{config["MONGODB_USER"]}:'
-                f'{config["MONGODB_PASSWORD"]}@{config["MONGODB_HOST"]}:'
-                f'{config["MONGODB_PORT"]}?authSource={config["MONGODB_AUTHSOURCE"]}')
+    mongo_uri = (
+        f'mongodb://{config["MONGODB_USER"]}:'
+        f'{config["MONGODB_PASSWORD"]}@{config["MONGODB_HOST"]}:'
+        f'{config["MONGODB_PORT"]}?authSource={config["MONGODB_AUTHSOURCE"]}'
+    )
 
     # Make a connection to the database server
     connection = pymongo.MongoClient(mongo_uri)
@@ -43,14 +45,10 @@ def create_app():
         renders the home page
         """
         ds = load_dataset(
-            "patrickvonplaten/librispeech_asr_dummy",
-            "clean",
-            split="validation"
+            "patrickvonplaten/librispeech_asr_dummy", "clean", split="validation"
         )
 
-        res = { 
-            "transcription" : inference.speech2textpipeline(ds[0]["audio"]["array"])
-        }
+        res = {"transcription": inference.speech2textpipeline(ds[0]["audio"]["array"])}
 
         print(res["transcription"])
 
@@ -58,7 +56,9 @@ def create_app():
 
     try:
         # verify the connection works by pinging the database
-        connection.admin.command("ping")  # The ping command is cheap and does not require auth.
+        connection.admin.command(
+            "ping"
+        )  # The ping command is cheap and does not require auth.
         print(" *", "Connected to MongoDB!")  # if we get here, the connection worked!
     except pymongo.errors.OperationFailure as e:
         # the ping command failed, so the connection is not available.

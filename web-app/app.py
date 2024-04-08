@@ -18,9 +18,11 @@ def create_app():
     app = Flask(__name__)
     app.secret_key = config["WEBAPP_FLASK_SECRET_KEY"]
 
-    mongo_uri = (f'mongodb://{config["MONGODB_USER"]}:'
-                f'{config["MONGODB_PASSWORD"]}@{config["MONGODB_HOST"]}:'
-                f'{config["MONGODB_PORT"]}?authSource={config["MONGODB_AUTHSOURCE"]}')
+    mongo_uri = (
+        f'mongodb://{config["MONGODB_USER"]}:'
+        f'{config["MONGODB_PASSWORD"]}@{config["MONGODB_HOST"]}:'
+        f'{config["MONGODB_PORT"]}?authSource={config["MONGODB_AUTHSOURCE"]}'
+    )
 
     # Make a connection to the database server
     connection = pymongo.MongoClient(mongo_uri)
@@ -30,7 +32,9 @@ def create_app():
 
     try:
         # verify the connection works by pinging the database
-        connection.admin.command("ping")  # The ping command is cheap and does not require auth.
+        connection.admin.command(
+            "ping"
+        )  # The ping command is cheap and does not require auth.
         print(" *", "Connected to MongoDB!")  # if we get here, the connection worked!
     except pymongo.errors.OperationFailure as e:
         # the ping command failed, so the connection is not available.

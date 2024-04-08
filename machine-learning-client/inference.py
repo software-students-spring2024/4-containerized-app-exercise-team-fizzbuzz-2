@@ -12,9 +12,8 @@ from transformers import Speech2TextProcessor, Speech2TextForConditionalGenerati
 model = Speech2TextForConditionalGeneration.from_pretrained(
     "facebook/s2t-small-librispeech-asr"
 )
-processor = Speech2TextProcessor.from_pretrained(
-    "facebook/s2t-small-librispeech-asr"
-)
+processor = Speech2TextProcessor.from_pretrained("facebook/s2t-small-librispeech-asr")
+
 
 def test_test():
     """
