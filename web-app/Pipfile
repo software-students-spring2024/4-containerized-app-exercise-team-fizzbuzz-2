@@ -18,6 +18,8 @@ typing-extensions = "*"
 dill = "*"
 exceptiongroup = "*"
 config = "*"
+soundfile = "*"
+python-ffmpeg = "*"
 
 [dev-packages]
 pylint = "*"

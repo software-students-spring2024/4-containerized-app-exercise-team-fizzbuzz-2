@@ -1,48 +1,3 @@
-// // // client.js
-
-// // $(document).ready(function() {
-// //     $('#predict-button').click(function() {
-// //         console.log('AJAX request successful'); // Log a message when the AJAX request is successful
-// //         $.ajax({
-// //             type: 'GET',
-// //             url: 'http://localhost:9696/test',
-// //             success: function(response) {
-// //                 // Parse the JSON response
-// //                 var transcription = response.transcription;
-
-// //                 // Display the transcription
-// //                 $('#transcription-result').text('Transcription: ' + transcription);
-// //             },
-// //             error: function(xhr, status, error) {
-// //                 console.error('Error:', error);
-// //             }
-// //         });
-// //     });
-// // });
-
-// // client.js
-
-// $(document).ready(function() {
-//     $('#predict-button').click(function() {
-//         console.log('AJAX request successful'); // Log a message when the AJAX request is successful
-//         $.ajax({
-//             const url = 'http://localhost:3000/hello.json';
-//             const req = new XMLHttpRequest();
-//             req.open('GET', url, true);,
-//             success: function(response) {
-//                 // Parse the JSON response
-//                 var transcription = response.transcription;
-
-//                 // Display the transcription
-//                 $('#transcription-result').text('Transcription: ' + transcription);
-//             },
-//             error: function(xhr, status, error) {
-//                 console.error('Error:', error);
-//             }
-//         });
-//     });
-// });
-
 const recordButton = document.getElementById('record'); //adding a record button to start the recording
 const stopButton = document.getElementById('stop'); //adding a stop button to stop the recording
 let mediaRecorder; //creating a mediaRecorder object to record the audio
@@ -78,16 +33,14 @@ recordButton.addEventListener('click', async () => {
     //here, start to prepare the audio to send to the backend
     mediaRecorder.addEventListener("stop", () => {
         //for example, create a Blob object from the audio chunks and make it a WAV file
-        const audioBlob = new Blob(audioChunks , { 'type' : 'audio/wav' });
+        const audioBlob = new Blob(audioChunks , { type : 'audio/mp3' });
         //now send the audioBlob to the ML client to process the audio and ge the prediction
         const formData = new FormData();
-        formData.append('audio', audioBlob);
-        console.log(formData)
-        
+        formData.set('audio', audioBlob, 'test.mp3');
+
         // Open Request
         const req=new XMLHttpRequest();
-        req.open('POST', 'http://localhost:5000/upload-audio');
-        // req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8; audio/wav');
+        req.open('POST', '/api/transcribe', true);
         req.addEventListener('load',function() {
             if(req.status >= 200 && req.status < 400) {
                 const messages =JSON.parse(req.responseText);
@@ -98,9 +51,12 @@ recordButton.addEventListener('click', async () => {
         req.addEventListener('error', function(e) {
             console.log('uh-oh, something went wrong ' + e);
         });
+
+        // req.setRequestHeader("Content-Type", "multipart/form-data");
+
         req.send(formData);
         
-        //plays the audio back to the user
+        // plays the audio back to the user
         // const audioUrl = URL.createObjectURL(audioBlob);
         // const audio = new Audio(audioUrl);
         // audio.play();
@@ -114,3 +70,21 @@ recordButton.addEventListener('click', async () => {
         mediaRecorder.stop();
     }, 3000);
 });
+
+// Function to download data to a file
+function download(file, filename) {
+    if (window.navigator.msSaveOrOpenBlob) // IE10+
+        window.navigator.msSaveOrOpenBlob(file, filename);
+    else { // Others
+        var a = document.createElement("a"),
+                url = URL.createObjectURL(file);
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(function() {
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);  
+        }, 0); 
+    }
+}

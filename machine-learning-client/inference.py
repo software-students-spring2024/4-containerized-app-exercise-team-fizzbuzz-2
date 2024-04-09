@@ -25,7 +25,7 @@ def test_test():
     return True
 
 
-def speech2textpipeline(source: Optional[AnyStr] = None) -> Optional[AnyStr]:
+def speech2textpipeline(source: Optional[AnyStr] = None, sample_rate: int = 16_000) -> Optional[AnyStr]:
     """
     Args:
         SOURCE: Audio Input.
@@ -36,7 +36,7 @@ def speech2textpipeline(source: Optional[AnyStr] = None) -> Optional[AnyStr]:
     # To Do: Must add recorded audio
 
     # add
-    inputs = processor(source, sampling_rate=16_000, return_tensors="pt")
+    inputs = processor(source, sampling_rate=sample_rate, return_tensors="pt")
     generated_ids = model.generate(
         inputs["input_features"], attention_mask=inputs["attention_mask"]
     )
