@@ -22,10 +22,14 @@ def create_app():
     def upload_audio():
         """
         handles audio file upload
-        """
-        audio_file = request.files["audio"]
+        # """
+        audio_file = request.files.get("audio")
+        # print(request.form)
         # For testing, just return a success message
-        return jsonify({"message": "Audio received!"})
+        
+        resp=jsonify({"message": request.form})
+        resp.headers.add('Access-Control-Allow-Origin','*')
+        return resp
 
     @app.route("/predict", methods=["POST"])
     def predict():
