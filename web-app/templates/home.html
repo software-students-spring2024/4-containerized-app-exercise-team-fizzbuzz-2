@@ -2,8 +2,70 @@
 
 {% block container %}
 
-    <p>
-        Testing
-    </p>
+    <h2>Welcome! Record Audio Here</h2>
+    <button id="record">Record</button>
+    <button id="stop" style="display: none;">Stop</button>
+    <script>
+        const recordButton = document.getElementById('record'); //adding a record button to start the recording
+        const stopButton = document.getElementById('stop'); //adding a stop button to stop the recording
+        let mediaRecorder; //creating a mediaRecorder object to record the audio
+
+        //adding an event listener to the record button to start recording audio when the user clicks on it
+        recordButton.addEventListener('click', async () => { 
+            //using the getUserMedia API to get the audio stream from the user's microphone
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            //creating a mediaRecorder object to record the audio stream
+            mediaRecorder = new MediaRecorder(stream);
+            //starting the mediaRecorder object to record the audio stream
+            mediaRecorder.start();
+            recordButton.style.display = 'none'; //when recording starts, hide the record button
+            stopButton.style.display = ''; //when recording starts, show the stop button
+            const audioChunks = []; //creating an array to store the audio chunks
+
+            //adding an event listener to the mediaRecorder object to store the audio chunks in the array when they become available
+            mediaRecorder.addEventListener("dataavailable", event => {
+                audioChunks.push(event.data);
+            });
+
+            //adding an event listener to the stop button to stop the recording when the user clicks on it
+            //mostly stylistic stuff + stopping the recording of the media recorder object
+            stopButton.addEventListener('click', () => {
+                mediaRecorder.stop();
+                //when the recording stops, hide the stop button
+                stopButton.style.display = 'none';
+                //when the recording stops, show the record button
+                recordButton.style.display = '';
+                
+            });
+
+            //here, start to prepare the audio to send to the backend
+            mediaRecorder.addEventListener("stop", () => {
+                //for example, create a Blob object from the audio chunks and make it a WAV file
+                const audioBlob = new Blob(audioChunks , { 'type' : 'audio/wav' });
+                //now send the audioBlob to the ML client to process the audio and ge the prediction
+                const formData = new FormData();
+                formData.append('audio', audioBlob);
+                fetch('/predict', {
+                    method: 'POST',
+                    body: formData
+                }).then(response => response.json())
+                .then(data => console.log(data)) //print the prediction to the console
+                .catch(error => console.error(error)); //if there's an error, print it to the console
+
+                //plays the audio back to the user
+                const audioUrl = URL.createObjectURL(audioBlob);
+                const audio = new Audio(audioUrl);
+                audio.play();
+        
+            });
+
+            
+
+            //if it's been 3 seconds since the recording started and the user hasn't stopped the recording, stop the recording
+            setTimeout(() => {
+                mediaRecorder.stop();
+            }, 3000);
+        });
+    </script>
 
 {% endblock %}

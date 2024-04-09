@@ -17,6 +17,7 @@ tomli = "*"
 typing-extensions = "*"
 dill = "*"
 exceptiongroup = "*"
+config = "*"
 
 [dev-packages]
 pylint = "*"
