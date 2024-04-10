@@ -4,7 +4,7 @@ methods to create and delete collections
 
 from dotenv import dotenv_values
 from transcription import Transcription
-from Prompt import Prompt
+from prompt import Prompt
 from default_values import list_of_prompts
 
 # Loading development configurations
