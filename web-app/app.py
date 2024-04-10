@@ -8,6 +8,10 @@ from bson.objectid import ObjectId
 from bson import json_util
 from flask import Flask, render_template, jsonify, session
 from dotenv import dotenv_values
+from nested_collections import NestedCollection
+from setup_mg import end_mgd, start_mgd
+from transcription import Transcription
+from prompt import Prompt
 
 config = dotenv_values(".env")
 
@@ -16,6 +20,7 @@ def create_app():
     """
     returns a flask app
     """
+        # Make flask app
     app = Flask(__name__)
     app.secret_key = config["WEBAPP_FLASK_SECRET_KEY"]
 
@@ -25,13 +30,24 @@ def create_app():
         f'{config["MONGODB_PORT"]}?authSource={config["MONGODB_AUTHSOURCE"]}'
     )
 
+    print("not done")
+
     # Make a connection to the database server
     connection = pymongo.MongoClient(mongo_uri)
+
+    print("Done")
 
     print(connection)
 
     # Select a specific database on the server
-    # db = connection[config["MONGODB_NAME"]]
+    db = connection[config["MONGODB_NAME"]]
+
+    if not db.nested_collections.find_one({"name": "SE_Project4"}):
+        db.nested_collections.insert({"name": "SE_Project4", "children": []})
+    se4_db = NestedCollection("SE_Project4", db)
+
+    end_mgd(db, se4_db)
+    start_mgd(se4_db)
 
     try:
         # verify the connection works by pinging the database
@@ -51,6 +67,7 @@ def create_app():
 
         if not session.get("associated_id"):
             session["associated_id"] = json.loads(json_util.dumps(ObjectId()))
+            print(session["associated_id"])
             print("Generating new session id")
 
         return render_template("home.html", home=True)
@@ -62,6 +79,10 @@ def create_app():
         """
 
         # Area where we get the scores associated with this ID
+        scores = []
+        scorings = Transcription.transcriptions.find({'scoring.cookie': session['associated_id']}, {'_id': None, 'inputed': 1, 'scoring.score': 1})
+        for each_score in scorings:
+            scores.append({'key': each_score['inputted'], 'value': each_score['scoring.score']})
 
         scores = [
             {"key": "This is a sentence", "value": "5/7"},
@@ -76,8 +97,11 @@ def create_app():
 
     @app.route("/api/cards")
     def cards():
-        sentences = ["test", "words"]
-        resp = jsonify({"cards": sentences})
+        prompts = []
+        sentences = list(Prompt.prompts.find({}, {'_id': None, 'prompt': 1}).sort({'$natural':1}).limit(2))
+        for each_prompt in sentences:
+            prompts.append(each_prompt['prompt'])
+        resp = jsonify({"cards": prompts})
         resp.headers.add("Access-Control-Allow-Origin", "*")
         return resp
 

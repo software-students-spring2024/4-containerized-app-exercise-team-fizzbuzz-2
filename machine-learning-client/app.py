@@ -8,7 +8,6 @@ from flask import Flask, jsonify, request
 import librosa
 from ffmpeg import FFmpeg
 import inference
-from nested_collections import NestedCollection
 
 # from Transcription import *
 # from Prompt import *
@@ -26,40 +25,33 @@ def create_app():
     app = Flask(__name__)
     app.secret_key = config["ML_FLASK_SECRET_KEY"]
 
-    mongo_uri = (
-        f'mongodb://{config["MONGODB_USER"]}:'
-        f'{config["MONGODB_PASSWORD"]}@{config["MONGODB_HOST"]}:'
-        f'{config["MONGODB_PORT"]}?authSource={config["MONGODB_AUTHSOURCE"]}'
-    )
+    # mongo_uri = (
+    #     f'mongodb://{config["MONGODB_USER"]}:'
+    #     f'{config["MONGODB_PASSWORD"]}@{config["MONGODB_HOST"]}:'
+    #     f'{config["MONGODB_PORT"]}?authSource={config["MONGODB_AUTHSOURCE"]}'
+    # )
 
-    print("not done")
+    # print("not done")
 
-    # Make a connection to the database server
-    connection = pymongo.MongoClient(mongo_uri)
+    # # Make a connection to the database server
+    # connection = pymongo.MongoClient(mongo_uri)
 
-    print("Done")
+    # print("Done")
 
-    print(connection)
+    # print(connection)
 
-    # Select a specific database on the server
-    db = connection[config["MONGODB_NAME"]]
+    # # Select a specific database on the server
+    # db = connection[config["MONGODB_NAME"]]
 
-    if not db.nested_collections.find_one({"name": "SE_Project4"}):
-        db.nested_collections.insert({"name": "SE_Project4", "children": []})
-    se4_db = NestedCollection("SE_Project4", db)
-
-    end_mgd(db, se4_db)
-    start_mgd(se4_db)
-
-    try:
-        # verify the connection works by pinging the database
-        connection.admin.command(
-            "ping"
-        )  # The ping command is cheap and does not require auth.
-        print(" *", "Connected to MongoDB!")  # if we get here, the connection worked!
-    except pymongo.errors.OperationFailure as err:
-        # the ping command failed, so the connection is not available.
-        print(" * MongoDB connection error:", err)  # debug
+    # try:
+    #     # verify the connection works by pinging the database
+    #     connection.admin.command(
+    #         "ping"
+    #     )  # The ping command is cheap and does not require auth.
+    #     print(" *", "Connected to MongoDB!")  # if we get here, the connection worked!
+    # except pymongo.errors.OperationFailure as err:
+    #     # the ping command failed, so the connection is not available.
+    #     print(" * MongoDB connection error:", err)  # debug
 
     @app.route("/api/transcribe", methods=["POST"])
     def upload_audio():
