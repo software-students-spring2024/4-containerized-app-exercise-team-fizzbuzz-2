@@ -21,7 +21,28 @@
             <li><a href="/"><img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo"></a></li> 
             <li><a href="/">Monolingo</a></li>
         </ul>
-        </header>
+      </header>
+
+        <nav class="navigation">
+          <ul>
+            {% if home %}
+            <li>
+              <a id="test" href="/" class="active">Test</a>
+            </li>
+            <li>
+              <a id="score" href="/scores">Scores</a>
+            </li>
+            {% else %}
+            <li>
+              <a id="test" href="/">Test</a>
+            </li>
+            <li>
+              <a id="score" href="/scores" class="active">Scores</a>
+            </li>
+            {% endif %}
+          </ul>
+        </nav>
+
       <main>{% block container %} {% endblock %}</main>
       <footer>
         <div>

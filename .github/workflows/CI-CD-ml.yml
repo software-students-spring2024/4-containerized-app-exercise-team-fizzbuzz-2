@@ -31,7 +31,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
     name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4

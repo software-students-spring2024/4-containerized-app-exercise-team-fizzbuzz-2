@@ -75,6 +75,7 @@ const recordButton = document.querySelector('#record'); //adding a record button
 const stopButton = document.querySelector('#stop'); //adding a stop button to stop the recording
 const nextButton = document.querySelector('#next'); //adding a record button to start the recording
 const endButton = document.querySelector('#end'); //adding a stop button to stop the recording
+const viewButton = document.querySelector('#view_scores'); //adding a stop button to stop the recording
 
 function main() {
     console.log("DOM fully loaded and parsed");
@@ -87,6 +88,7 @@ function main() {
             const cards =JSON.parse(req.responseText);
             console.log(cards);
             deck = new Deck(cards["cards"]);
+            deck.shuffle();
             console.log(cardArea);
             currentSentence = loadCardAreaFromHand(cardArea, deck.cards);
         }
@@ -172,6 +174,7 @@ async function startRecording () {
                             statusText.textContent = "";
                             cardArea.style.display = 'none';
                             endButton.style.display = 'none';
+                            viewButton.style.display = '';
                         });
                     }
                 }

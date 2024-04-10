@@ -149,3 +149,58 @@ header {
     background-color: rgb(240, 225, 228);
     font-size: 100px;
 }
+
+/* Creating navigation bar */
+.navigation a.active {
+    background-color: white;
+}
+
+.navigation a:link, a:visited {
+    font-size: 36px;
+    background-color: grey;
+    color: rgb(99, 41, 92);
+    border: 10px solid rgb(99, 41, 92);
+    padding: 5px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.navigation a:hover, a:active {
+    background-color: rgb(170, 110, 163);
+    color: white;
+}
+
+.navigation {
+    margin: 18px;
+}
+
+.navigation ul {
+    list-style-type: none;
+    overflow: hidden;
+    text-align: center;
+}
+
+.navigation li {
+    display: inline;
+}
+
+.navigation li a {
+    display: inline-block;
+}
+
+.navigation li p {
+    display: inline-block;
+    padding: 10px;
+}
+
+table {
+    width: 80%;
+    font-size: 36px;
+    background-color: white;
+    color: rgb(99, 41, 92);
+    border: 10px solid rgb(99, 41, 92);
+    padding: 5px 20px;
+    text-align: center;
+    text-decoration: none;   
+}
