@@ -8,6 +8,7 @@ Author: Firas Darwish
 
 # import pytest
 
+
 class Tests:
     """Class defines tests"""
 
