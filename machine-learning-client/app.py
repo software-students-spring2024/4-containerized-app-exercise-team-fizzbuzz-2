@@ -4,7 +4,7 @@ Webapp for providing API for communicating with machine learning client
 
 import pymongo
 from dotenv import dotenv_values
-from flask import Flask, redirect, url_for, json, jsonify, request
+from flask import Flask, jsonify, request
 import librosa
 from ffmpeg import FFmpeg
 import inference
