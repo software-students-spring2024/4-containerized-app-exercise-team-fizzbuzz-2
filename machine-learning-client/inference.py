@@ -20,11 +20,11 @@ def test():
     """
     test
     """
-    ds = load_dataset(
+    dso = load_dataset(
         "patrickvonplaten/librispeech_asr_dummy", "clean", split="validation"
     )
 
-    speech2textpipeline(ds[0]["audio"]["array"])
+    speech2textpipeline(dso[0]["audio"]["array"])
 
 
 def speech2textpipeline(
@@ -38,6 +38,9 @@ def speech2textpipeline(
         Transcription (string).
     """
     # To Do: Must add recorded audio
+
+    if source is None:
+        return None
 
     # add
     inputs = processor(source, sampling_rate=sample_rate, return_tensors="pt")

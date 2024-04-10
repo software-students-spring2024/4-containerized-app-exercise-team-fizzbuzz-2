@@ -8,6 +8,11 @@ from flask import Flask, jsonify, request
 import librosa
 from ffmpeg import FFmpeg
 import inference
+from nested_collections import NestedCollection
+
+# from Transcription import *
+# from Prompt import *
+from setup_mg import end_mgd, start_mgd
 
 # Loading development configurations
 config = dotenv_values(".env")
@@ -37,17 +42,24 @@ def create_app():
     print(connection)
 
     # Select a specific database on the server
-    # db = connection[config["MONGODB_NAME"]]
+    db = connection[config["MONGODB_NAME"]]
 
-    # try:
-    #     # verify the connection works by pinging the database
-    #     connection.admin.command(
-    #         "ping"
-    #     )  # The ping command is cheap and does not require auth.
-    #     print(" *", "Connected to MongoDB!")  # if we get here, the connection worked!
-    # except pymongo.errors.OperationFailure as e:
-    #     # the ping command failed, so the connection is not available.
-    #     print(" * MongoDB connection error:", e)  # debug
+    if not db.nested_collections.find_one({"name": "SE_Project4"}):
+        db.nested_collections.insert({"name": "SE_Project4", "children": []})
+    se4_db = NestedCollection("SE_Project4", db)
+
+    end_mgd(db, se4_db)
+    start_mgd(se4_db)
+
+    try:
+        # verify the connection works by pinging the database
+        connection.admin.command(
+            "ping"
+        )  # The ping command is cheap and does not require auth.
+        print(" *", "Connected to MongoDB!")  # if we get here, the connection worked!
+    except pymongo.errors.OperationFailure as err:
+        # the ping command failed, so the connection is not available.
+        print(" * MongoDB connection error:", err)  # debug
 
     @app.route("/api/transcribe", methods=["POST"])
     def upload_audio():
