@@ -1,6 +1,6 @@
 ![Lint-free](https://github.com/nyu-software-engineering/containerized-app-exercise/actions/workflows/lint.yml/badge.svg)
 
-![example workflow](https://github.com/Github Classroom/4-containerized-app-exercise-team-fizzbuzz-2/actions/workflows/main.yml/badge.svg)
+![example workflow](https://github.com/nyu-software-engineering/4-containerized-app-exercise-team-fizzbuzz-2/actions/workflows/main.yml/badge.svg)
 
 # Containerized App Exercise
 
