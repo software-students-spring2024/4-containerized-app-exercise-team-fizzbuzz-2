@@ -19,6 +19,7 @@ librosa = "*"
 torchaudio = "*"
 python-ffmpeg = "*"
 soundfile = "*"
+coverage = "*"
 
 [dev-packages]
 
