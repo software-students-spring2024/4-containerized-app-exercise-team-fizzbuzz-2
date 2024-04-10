@@ -16,7 +16,7 @@
 
 ## Project Description
 
-Monolingo is a language learning app that teaches you english pronounciation from... english. Not exactly the most useful but oh well haha. Monolingo presents users with a set of sentences they need to practice, and stores their scores (by associating with their current cookie rather than by creating permanent users). To check pronunciation, Monolingo sends the user input to Meta-AI's Speech2Text machine learning model and checks whether the output matches. Metadata and training sentences are stored on a mongoDB database.
+Monolingo is a language learning app that teaches you english pronounciation from... english. Not exactly the most useful but oh well haha. Monolingo presents users with a set of sentences they need to practice, and stores their scores (by associating with their current cookie rather than by creating permanent users). To check pronunciation, Monolingo sends the user input to Meta-AI's Speech2Text machine learning model and checks whether the output matches. Metadata and training sentences are stored on a MongoDB database.
 
 ## Configure and Run
 
