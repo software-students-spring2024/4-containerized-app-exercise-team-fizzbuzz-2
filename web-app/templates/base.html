@@ -1,31 +1,36 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Webapp for Project 4</title>
+    <title>Monolingo</title>
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='css/style.css') }}"
     />
-    <link rel="shortcut icon" href="">
-    <!-- <link
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Micro+5&display=swap" rel="stylesheet">
+    <link
       rel="icon"
       href="{{ url_for('static', filename='img/logo.png') }}"
-    /> -->
+    />
   </head>
   <body>
     <div>
       <header>
-        <h1>Webapp for Project 4</h1>
-      </header>
+        <ul>
+            <li><a href="/"><img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo"></a></li> 
+            <li><a href="/">Monolingo</a></li>
+        </ul>
+        </header>
       <main>{% block container %} {% endblock %}</main>
       <footer>
-        <p>
+        <div>
           &copy; 2022. Shared under the GPL3 license. Source code available at
           <a
-            href="https://github.com/nyu-software-engineering/flask-pymongo-web-app-example"
+            href="https://github.com/software-students-spring2024/4-containerized-app-exercise-team-fizzbuzz-2/tree/main"
             >available on Github</a
           >.
-        </p>
+        </div>
       </footer>
     </div>
   </body>

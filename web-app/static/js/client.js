@@ -1,9 +1,110 @@
-const recordButton = document.getElementById('record'); //adding a record button to start the recording
-const stopButton = document.getElementById('stop'); //adding a stop button to stop the recording
-let mediaRecorder; //creating a mediaRecorder object to record the audio
+// game.js
 
-//adding an event listener to the record button to start recording audio when the user clicks on it
-recordButton.addEventListener('click', async () => { 
+class Card {
+    constructor (title, sentence) {
+        this.title = title;
+        this.sentence = sentence;
+    }
+}
+
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min)) + min;
+}
+
+function elt(type, ...arguments) {
+	const ele = document.createElement(type);
+    console.log(arguments)
+	// start at 1 or else we'll get the type argument!
+	for (let i = 0; i < arguments.length; i++) {
+		let child = arguments[i];
+		if (typeof child === "string") {
+			child = document.createTextNode(child);
+		}
+		ele.appendChild(child);
+	}
+	return ele;
+}
+
+class Deck {
+
+    constructor(sentences) {
+        this.cards = sentences.map(sentence => new Card("Read this sentence", sentence));
+        this.shuffle()
+    }
+
+    shuffle() {
+        this.cards = this.cards.reduce((shuffled, card) => {
+            shuffled.splice(getRandomInt(0, shuffled.length), 0, card);
+            return shuffled;
+        }, []);
+    }
+
+    deal() {
+        return this.cards.shift();
+    }
+}
+
+
+function loadCardAreaFromHand(cardArea, hand) {
+
+    console.log(hand);
+
+    cardArea.innerHTML = '';
+
+    const cardElt = elt('div', 
+                        elt('div', hand[0].title),
+                        elt('div', elt('div', hand[0].sentence)));
+    cardElt.classList.add("card");
+    cardElt.style.rotate = `0 0 1 ${getRandomInt(2, -2)}deg`;
+    cardElt.childNodes[0].classList.add("card-header");
+    cardElt.childNodes[1].classList.add("card-body");
+
+    cardArea.appendChild(cardElt);
+
+    return hand[0].sentence;
+}
+
+const cardArea = document.querySelector(".card-area");
+
+let deck = [];
+let currentSentence = '';
+
+const statusText = document.querySelector('#status');
+
+const recordButton = document.querySelector('#record'); //adding a record button to start the recording
+const stopButton = document.querySelector('#stop'); //adding a stop button to stop the recording
+const nextButton = document.querySelector('#next'); //adding a record button to start the recording
+const endButton = document.querySelector('#end'); //adding a stop button to stop the recording
+
+function main() {
+    console.log("DOM fully loaded and parsed");
+
+    // Open Request
+    const req = new XMLHttpRequest();
+    req.open('GET', '/api/cards', false);
+    req.addEventListener('load',function() {
+        if(req.status >= 200 && req.status < 400) {
+            const cards =JSON.parse(req.responseText);
+            console.log(cards);
+            deck = new Deck(cards["cards"]);
+            console.log(cardArea);
+            currentSentence = loadCardAreaFromHand(cardArea, deck.cards);
+        }
+    });
+    // Error handling
+    req.addEventListener('error', function(e) {
+        console.log('uh-oh, something went wrong ' + e);
+    });
+    
+    req.send();
+    
+    //adding an event listener to the record button to start recording audio when the user clicks on it
+    recordButton.addEventListener('click', startRecording);
+}
+
+document.addEventListener('DOMContentLoaded', main);
+
+async function startRecording () {
     //using the getUserMedia API to get the audio stream from the user's microphone
     const stream = await navigator.mediaDevices.getUserMedia({
         audio: {
@@ -11,7 +112,7 @@ recordButton.addEventListener('click', async () => {
         } 
     });
     //creating a mediaRecorder object to record the audio stream
-    mediaRecorder = new MediaRecorder(stream);
+    const mediaRecorder = new MediaRecorder(stream);
     //starting the mediaRecorder object to record the audio stream
     mediaRecorder.start();
     recordButton.style.display = 'none'; //when recording starts, hide the record button
@@ -30,8 +131,6 @@ recordButton.addEventListener('click', async () => {
         //when the recording stops, hide the stop button
         stopButton.style.display = 'none';
         //when the recording stops, show the record button
-        recordButton.style.display = '';
-        
     });
 
     //here, start to prepare the audio to send to the backend
@@ -47,16 +146,46 @@ recordButton.addEventListener('click', async () => {
         req.open('POST', 'http://localhost:9696/api/transcribe', true);
         req.addEventListener('load',function() {
             if(req.status >= 200 && req.status < 400) {
-                const messages =JSON.parse(req.responseText);
-                console.log(messages)
+                const transcription =JSON.parse(req.responseText);
+                console.log(transcription);
+                const s = score(transcription["transcription"]);
+                console.log(s);
+                if (s) {
+                    statusText.style.display = "";
+                    statusText.textContent = "Correct!";
+                    recordButton.style.display = "none";
+                    if (deck.cards.length > 1) {
+                        nextButton.style.display = '';
+                        nextButton.addEventListener("click", () => {
+                            statusText.style.display = "";
+                            statusText.textContent = "";
+                            deck.deal();
+                            currentSentence = loadCardAreaFromHand(cardArea, deck.cards);
+                            recordButton.style.display = "";
+                            nextButton.style.display = 'none';
+                        });
+                    }
+                    else {
+                        endButton.style.display = '';
+                        endButton.addEventListener("click", () => {
+                            statusText.style.display = "";
+                            statusText.textContent = "";
+                            cardArea.style.display = 'none';
+                            endButton.style.display = 'none';
+                        });
+                    }
+                }
+                else {
+                    statusText.style.display = "";
+                    statusText.textContent = "Try again";
+                    recordButton.style.display = "";
+                }
             }
         });
         // Error handling
         req.addEventListener('error', function(e) {
             console.log('uh-oh, something went wrong ' + e);
         });
-
-        // req.setRequestHeader("Content-Type", "multipart/form-data");
 
         req.send(formData);
         
@@ -67,28 +196,32 @@ recordButton.addEventListener('click', async () => {
 
     });
 
-    
-
     //if it's been 3 seconds since the recording started and the user hasn't stopped the recording, stop the recording
     setTimeout(() => {
-        mediaRecorder.stop();
-    }, 3000);
-});
+        stopButton.click();
+    }, 5000);
+}
+
+function score(sentence) {
+    console.log(currentSentence.toLowerCase(), sentence.toLowerCase());
+    return currentSentence.toLowerCase() === sentence.toLowerCase();
+}
+
 
 // Function to download data to a file
-function download(file, filename) {
-    if (window.navigator.msSaveOrOpenBlob) // IE10+
-        window.navigator.msSaveOrOpenBlob(file, filename);
-    else { // Others
-        var a = document.createElement("a"),
-                url = URL.createObjectURL(file);
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        setTimeout(function() {
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);  
-        }, 0); 
-    }
-}
+// function download(file, filename) {
+//     if (window.navigator.msSaveOrOpenBlob) // IE10+
+//         window.navigator.msSaveOrOpenBlob(file, filename);
+//     else { // Others
+//         var a = document.createElement("a"),
+//                 url = URL.createObjectURL(file);
+//         a.href = url;
+//         a.download = filename;
+//         document.body.appendChild(a);
+//         a.click();
+//         setTimeout(function() {
+//             document.body.removeChild(a);
+//             window.URL.revokeObjectURL(url);  
+//         }, 0); 
+//     }
+// }

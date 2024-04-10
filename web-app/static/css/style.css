@@ -44,22 +44,6 @@ form label {
     color: white;
 }
 
-.playBtn {
-    font-size: x-large;
-    background-color: white;
-    color: rgb(99, 41, 92);
-    border: 5px solid rgb(45, 14, 41);
-    padding: 5px 15px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-}
-
-.playBtn:hover, .playBtn:active {
-    background-color: rgb(170, 110, 163);
-    color: white;
-}
-
 button {
     margin: 10px;
     font-size: x-large;
@@ -77,11 +61,6 @@ button:hover, button:active {
     color: white;
 }
 
-#startValues {
-    border-radius: 0px;
-    font-size: x-large;
-}
-
 div {
     text-align: center;
 }
@@ -96,37 +75,25 @@ h1 {
 }
 
 .card-area {
-    width: 500px;
+    width: 100%;
     height: fit-content;
     padding: 10px;
 }
-  
+
 .card {
-    color: rgb(99, 41, 92);
     padding: 5px;
     display: inline-block;
-    height: 180px;
-    width: 115px;
+    height: 230px;
+    width: 360px;
     border-radius: 5px;
     border: 5px solid black;
     background-color: white;
     rotate: 0 0 1 0deg;
 }
-
-.card-hidden {
-    padding: 5px;
-    display: inline-block;
-    height: 180px;
-    width: 115px;
-    border-radius: 5px;
-    border: 5px solid black;
-    background-color: rgb(99, 41, 92);
-    rotate: 0 0 1 0deg;
-}
   
 .card-header {
     font-size: large;
-    height: 20%;
+    height: 10%;
     text-align: left;
 }
   
@@ -135,13 +102,50 @@ h1 {
     width: 100%;
     align-items: center;
     vertical-align: middle;
-    height: 60%;
+    height: 90%;
     font-size: xx-large;
 }
-  
-.card-footer {
-    height: 20%;
-    text-align: left;
-    rotate: 0 0 1 180deg;
-    font-size: large;
+
+header a {
+    color: hotpink;
+    text-decoration: none;
+}
+
+header a:hover {
+    color: rgb(99, 41, 92);
+}
+
+header a:active {
+    color: rgb(59, 17, 54);
+}
+
+header ul {
+    list-style-type: none;
+    overflow: hidden;
+    text-align: center;
+}
+
+header li {
+    display: inline;
+}
+
+header li a {
+    vertical-align: middle;
+    display: inline-block;
+}
+
+header img {
+    vertical-align: middle;
+    height: 100px;
+}
+
+header {
+    text-align: center;
+    width: 100%;
+    height: fit-content;
+    padding: 0px;
+    margin:0;
+    line-height: 1.5;
+    background-color: rgb(240, 225, 228);
+    font-size: 100px;
 }
