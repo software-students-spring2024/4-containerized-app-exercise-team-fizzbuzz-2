@@ -5,7 +5,11 @@ let mediaRecorder; //creating a mediaRecorder object to record the audio
 //adding an event listener to the record button to start recording audio when the user clicks on it
 recordButton.addEventListener('click', async () => { 
     //using the getUserMedia API to get the audio stream from the user's microphone
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+        sampleRate: 16000
+        } 
+    });
     //creating a mediaRecorder object to record the audio stream
     mediaRecorder = new MediaRecorder(stream);
     //starting the mediaRecorder object to record the audio stream
@@ -40,7 +44,7 @@ recordButton.addEventListener('click', async () => {
 
         // Open Request
         const req=new XMLHttpRequest();
-        req.open('POST', '/api/transcribe', true);
+        req.open('POST', 'http://localhost:9696/api/transcribe', true);
         req.addEventListener('load',function() {
             if(req.status >= 200 && req.status < 400) {
                 const messages =JSON.parse(req.responseText);

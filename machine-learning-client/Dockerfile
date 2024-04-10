@@ -4,6 +4,8 @@ FROM python:3.10-bookworm
 # Set the working directory in the image
 WORKDIR /app
 
+RUN apt-get update -qq && apt-get install ffmpeg -y
+
 # install dependencies into the image - doing this first will speed up subsequent builds, as Docker will cache this step
 COPY requirements.txt ./
 RUN pip3 install -r requirements.txt
