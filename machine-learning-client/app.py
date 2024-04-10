@@ -27,21 +27,27 @@ def create_app():
         f'{config["MONGODB_PORT"]}?authSource={config["MONGODB_AUTHSOURCE"]}'
     )
 
+    print("not done")
+
     # Make a connection to the database server
     connection = pymongo.MongoClient(mongo_uri)
+
+    print("Done")
+
+    print(connection)
 
     # Select a specific database on the server
     # db = connection[config["MONGODB_NAME"]]
 
-    try:
-        # verify the connection works by pinging the database
-        connection.admin.command(
-            "ping"
-        )  # The ping command is cheap and does not require auth.
-        print(" *", "Connected to MongoDB!")  # if we get here, the connection worked!
-    except pymongo.errors.OperationFailure as e:
-        # the ping command failed, so the connection is not available.
-        print(" * MongoDB connection error:", e)  # debug
+    # try:
+    #     # verify the connection works by pinging the database
+    #     connection.admin.command(
+    #         "ping"
+    #     )  # The ping command is cheap and does not require auth.
+    #     print(" *", "Connected to MongoDB!")  # if we get here, the connection worked!
+    # except pymongo.errors.OperationFailure as e:
+    #     # the ping command failed, so the connection is not available.
+    #     print(" * MongoDB connection error:", e)  # debug
 
     @app.route("/api/transcribe", methods=["POST"])
     def upload_audio():
@@ -94,17 +100,16 @@ def create_app():
             ffmpeg.execute()
 
             # data, samplerate = sf.read('test.mp3')
-            y, s = librosa.load("test.mp3", sr=16000)
-            print(y, s)
+            data, sampling_rate = librosa.load("test.mp3", sr=16000)
 
-            transcription = inference.speech2textpipeline(y, s)
+            transcription = inference.speech2textpipeline(data, sampling_rate)[0]
             print(transcription)
 
-            resp = jsonify({"message": transcription})
+            resp = jsonify({"transcription": transcription})
             resp.headers.add("Access-Control-Allow-Origin", "*")
             return resp
 
-        return jsonify({"Error": "Smthn went wrong"})
+        return jsonify({"error": "Smthn went wrong"})
 
     return app
 
