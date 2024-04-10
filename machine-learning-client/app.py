@@ -8,6 +8,11 @@ from flask import Flask, jsonify, request
 import librosa
 from ffmpeg import FFmpeg
 import inference
+from nested_collections import NestedCollection
+
+# from Transcription import *
+# from Prompt import *
+from setup_mg import end_mgd, start_mgd
 
 # Loading development configurations
 config = dotenv_values(".env")
@@ -31,7 +36,14 @@ def create_app():
     connection = pymongo.MongoClient(mongo_uri)
 
     # Select a specific database on the server
-    # db = connection[config["MONGODB_NAME"]]
+    db = connection[config["MONGODB_NAME"]]
+
+    if not db.nested_collections.find_one({"name": "SE_Project4"}):
+        db.nested_collections.insert({"name": "SE_Project4", "children": []})
+    se4_db = NestedCollection("SE_Project4", db)
+
+    end_mgd(db, se4_db)
+    start_mgd(se4_db)
 
     try:
         # verify the connection works by pinging the database

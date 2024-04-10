@@ -4,25 +4,23 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-pylint = "*"
 torch = "*"
 transformers = "*"
 datasets = "*"
-pytest = "*"
 flask = "*"
-pytest-flask = "*"
 sentencepiece = "*"
-black = "*"
 pymongo = "*"
 python-dotenv = "*"
 librosa = "*"
 torchaudio = "*"
 python-ffmpeg = "*"
 soundfile = "*"
-coverage = "*"
 
 [dev-packages]
+pylint = "*"
+pytest = "*"
+pytest-flask = "*"
+black = "*"
 
 [requires]
 python_version = "3.10"
-python_full_version = "3.10.10"
