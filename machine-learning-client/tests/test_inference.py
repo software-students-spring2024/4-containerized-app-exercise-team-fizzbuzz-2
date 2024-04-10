@@ -10,3 +10,6 @@ Author: Firas Darwish
 
 class Tests:
     """Class defines tests"""
+
+    def test_mock(self):
+        assert True
