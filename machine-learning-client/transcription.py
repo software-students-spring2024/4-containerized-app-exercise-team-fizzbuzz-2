@@ -7,6 +7,7 @@ from typing import Dict, AnyStr
 from bson.objectid import ObjectId
 from pymongo import collection
 
+
 class Transcription:
     """
     class implementation for transcriptions
