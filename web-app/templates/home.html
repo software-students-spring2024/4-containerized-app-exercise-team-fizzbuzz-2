@@ -2,9 +2,20 @@
 
 {% block container %}
 
-    <h2>Welcome! Record Audio Here</h2>
+    <div class="card-area"></div>
+
+    <div id="status" style="display: none;"></div>
+
     <button id="record">Record</button>
     <button id="stop" style="display: none;">Stop</button>
-    <script src="./static/js/client.js"></script>
+
+    <button id="next" style="display: none;">Next</button>
+    <button id="end" style="display: none;">End</button>
+
+    <div class="navigation">
+        <a href="/scores" id="view_scores" class="active" style="display: none;">View Scores</a>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/client.js') }}"></script>
 
 {% endblock %}

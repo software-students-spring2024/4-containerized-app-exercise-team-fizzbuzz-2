@@ -32,8 +32,14 @@ def create_app():
         f'{config["MONGODB_PORT"]}?authSource={config["MONGODB_AUTHSOURCE"]}'
     )
 
+    print("not done")
+
     # Make a connection to the database server
     connection = pymongo.MongoClient(mongo_uri)
+
+    print("Done")
+
+    print(connection)
 
     # Select a specific database on the server
     db = connection[config["MONGODB_NAME"]]
@@ -106,17 +112,16 @@ def create_app():
             ffmpeg.execute()
 
             # data, samplerate = sf.read('test.mp3')
-            yee, see = librosa.load("test.mp3", sr=16000)
-            print(yee, see)
+            data, sampling_rate = librosa.load("test.mp3", sr=16000)
 
-            transcription = inference.speech2textpipeline(yee, see)
+            transcription = inference.speech2textpipeline(data, sampling_rate)[0]
             print(transcription)
 
-            resp = jsonify({"message": transcription})
+            resp = jsonify({"transcription": transcription})
             resp.headers.add("Access-Control-Allow-Origin", "*")
             return resp
 
-        return jsonify({"Error": "Smthn went wrong"})
+        return jsonify({"error": "Smthn went wrong"})
 
     return app
 
