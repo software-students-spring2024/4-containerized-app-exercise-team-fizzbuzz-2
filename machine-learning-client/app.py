@@ -39,9 +39,9 @@ def create_app():
             "ping"
         )  # The ping command is cheap and does not require auth.
         print(" *", "Connected to MongoDB!")  # if we get here, the connection worked!
-    except pymongo.errors.OperationFailure as e:
+    except pymongo.errors.OperationFailure as err:
         # the ping command failed, so the connection is not available.
-        print(" * MongoDB connection error:", e)  # debug
+        print(" * MongoDB connection error:", err)  # debug
 
     @app.route("/api/transcribe", methods=["POST"])
     def upload_audio():
@@ -94,10 +94,10 @@ def create_app():
             ffmpeg.execute()
 
             # data, samplerate = sf.read('test.mp3')
-            y, s = librosa.load("test.mp3", sr=16000)
-            print(y, s)
+            yee, see = librosa.load("test.mp3", sr=16000)
+            print(yee, see)
 
-            transcription = inference.speech2textpipeline(y, s)
+            transcription = inference.speech2textpipeline(yee, see)
             print(transcription)
 
             resp = jsonify({"message": transcription})

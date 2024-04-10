@@ -15,17 +15,21 @@ model = Speech2TextForConditionalGeneration.from_pretrained(
 )
 processor = Speech2TextProcessor.from_pretrained("facebook/s2t-small-librispeech-asr")
 
+
 def test():
     """
     test
     """
-    ds = load_dataset(
+    dso = load_dataset(
         "patrickvonplaten/librispeech_asr_dummy", "clean", split="validation"
     )
 
-    speech2textpipeline(ds[0]["audio"]["array"])
+    speech2textpipeline(dso[0]["audio"]["array"])
 
-def speech2textpipeline(source: Optional[AnyStr] = None) -> Optional[AnyStr]:
+
+def speech2textpipeline(
+    source: Optional[AnyStr] = None, sample_rate: int = 16_000
+) -> Optional[AnyStr]:
     """
     Args:
         SOURCE: Audio Input.
@@ -37,15 +41,15 @@ def speech2textpipeline(source: Optional[AnyStr] = None) -> Optional[AnyStr]:
 
     if source is None:
         return None
-        # add
-    inputs = processor(source, sampling_rate=16_000, return_tensors="pt")
+
+    # add
+    inputs = processor(source, sampling_rate=sample_rate, return_tensors="pt")
     generated_ids = model.generate(
         inputs["input_features"], attention_mask=inputs["attention_mask"]
     )
 
     transcription = processor.batch_decode(generated_ids, skip_special_tokens=True)
-        # transcription is now list, for example: transcription =
-        # ['mister quilter is the apostle of the middle classes
-        # and we are glad to welcome his gospel']
+    # transcription is now list, for example: transcription =
+    # ['mister quilter is the apostle of the middle classes and we are glad to welcome his gospel']
 
     return transcription
