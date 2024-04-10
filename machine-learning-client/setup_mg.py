@@ -40,10 +40,16 @@ def end_mgd(db, se4_db):
     """
     delete all collections created
     """
-    Prompt.prompts.drop()
-    Transcription.transcriptions.drop()
+
+    try:
+        Prompt.prompts.drop()
+        Transcription.transcriptions.drop()
+    except AttributeError:
+        return
 
     se4_db.remove_collection("transcriptions")
     se4_db.remove_collection("prompts")
 
     db.nested_collections.drop({"name": "SE_PROJECT4"})
+
+    return
