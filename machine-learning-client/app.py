@@ -4,8 +4,9 @@ Webapp for providing API for communicating with machine learning client
 
 import pymongo
 from dotenv import dotenv_values
-from flask import Flask, redirect, url_for, json
-from datasets import load_dataset
+from flask import Flask, jsonify, request
+import librosa
+from ffmpeg import FFmpeg
 import inference
 
 # Loading development configurations
@@ -32,28 +33,6 @@ def create_app():
     # Select a specific database on the server
     # db = connection[config["MONGODB_NAME"]]
 
-    @app.route("/")
-    def show():
-        """
-        redirects to /home
-        """
-        return redirect(url_for("test"))
-
-    @app.route("/test", methods=["GET", "POST"])
-    def test():
-        """
-        renders the home page
-        """
-        ds = load_dataset(
-            "patrickvonplaten/librispeech_asr_dummy", "clean", split="validation"
-        )
-
-        res = {"transcription": inference.speech2textpipeline(ds[0]["audio"]["array"])}
-
-        print(res["transcription"])
-
-        return json.dumps(res)
-
     try:
         # verify the connection works by pinging the database
         connection.admin.command(
@@ -64,11 +43,76 @@ def create_app():
         # the ping command failed, so the connection is not available.
         print(" * MongoDB connection error:", e)  # debug
 
+    @app.route("/api/transcribe", methods=["POST"])
+    def upload_audio():
+        """
+        handles audio file upload
+        """
+
+        # audio_file = request.files.get('audio')
+        # print(audio_file)
+        # file_type = request.form.get("type", "wav")
+        # print(file_type)
+
+        audio_file = request.files.get("audio")
+
+        print(audio_file)
+
+        # print(audio_file.filename)
+
+        if audio_file and audio_file.filename != "":
+            # Save the file on the server.
+            audio_file.stream.seek(0)
+            audio_file.save("test.raw")
+
+            print("Managed")
+
+            saved = False
+
+            while not saved:
+                try:
+                    with open("test.raw", encoding="utf-8") as _:
+                        saved = True
+                except OSError:
+                    saved = False
+
+            ffmpeg = (
+                FFmpeg()
+                .option("y")
+                .input("test.raw")
+                .output(
+                    "test.mp3",
+                    {"codec:v": "libx264"},
+                    vf="scale=1280:-1",
+                    preset="veryslow",
+                    crf=24,
+                )
+            )
+
+            print("To")
+
+            ffmpeg.execute()
+
+            # data, samplerate = sf.read('test.mp3')
+            y, s = librosa.load("test.mp3", sr=16000)
+            print(y, s)
+
+            transcription = inference.speech2textpipeline(y, s)
+            print(transcription)
+
+            resp = jsonify({"message": transcription})
+            resp.headers.add("Access-Control-Allow-Origin", "*")
+            return resp
+
+        return jsonify({"Error": "Smthn went wrong"})
+
     return app
 
 
 if __name__ == "__main__":
     # use the PORT environment variable
+    inference.test()
+
     flask_app = create_app()
 
     print(config["ML_FLASK_PORT"])

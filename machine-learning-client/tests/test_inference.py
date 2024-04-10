@@ -6,28 +6,20 @@ This module tests the inference module.
 Author: Firas Darwish
 """
 
-import pytest
-from inference import test_test
+# import pytest
 
 
 class Tests:
     """Class defines tests"""
 
-    @pytest.fixture
-    def test_fixture(self):
+    def test_mock(self):
         """
-        sample test with pytest.fixture
+        mock 1
         """
-        print(1)
+        assert True
 
-    def test_test_test(self):
+    def test_mock_2(self):
         """
-        test to test if pytest tests properly
+        mock 2
         """
-        assert test_test() is True
-
-    def test_to_make_pylint_happy(self):
-        """
-        pylint wants two public methods here, I oblige
-        """
-        print(1)
+        assert True

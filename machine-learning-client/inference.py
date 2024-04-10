@@ -7,6 +7,7 @@ Author: Firas Darwish
 """
 
 from typing import AnyStr, Optional
+from datasets import load_dataset
 from transformers import Speech2TextProcessor, Speech2TextForConditionalGeneration
 
 model = Speech2TextForConditionalGeneration.from_pretrained(
@@ -15,17 +16,20 @@ model = Speech2TextForConditionalGeneration.from_pretrained(
 processor = Speech2TextProcessor.from_pretrained("facebook/s2t-small-librispeech-asr")
 
 
-def test_test():
+def test():
     """
-    test_test tests if pytest is working
-
-    Returns:
-        True
+    test
     """
-    return True
+    ds = load_dataset(
+        "patrickvonplaten/librispeech_asr_dummy", "clean", split="validation"
+    )
+
+    speech2textpipeline(ds[0]["audio"]["array"])
 
 
-def speech2textpipeline(source: Optional[AnyStr] = None) -> Optional[AnyStr]:
+def speech2textpipeline(
+    source: Optional[AnyStr] = None, sample_rate: int = 16_000
+) -> Optional[AnyStr]:
     """
     Args:
         SOURCE: Audio Input.
@@ -36,7 +40,7 @@ def speech2textpipeline(source: Optional[AnyStr] = None) -> Optional[AnyStr]:
     # To Do: Must add recorded audio
 
     # add
-    inputs = processor(source, sampling_rate=16_000, return_tensors="pt")
+    inputs = processor(source, sampling_rate=sample_rate, return_tensors="pt")
     generated_ids = model.generate(
         inputs["input_features"], attention_mask=inputs["attention_mask"]
     )

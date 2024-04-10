@@ -1,5 +1,8 @@
-from flask import Flask, render_template, request, jsonify
+"""
+Web-app
+"""
 
+from flask import Flask, render_template
 from dotenv import dotenv_values
 
 config = dotenv_values(".env")
@@ -17,23 +20,6 @@ def create_app():
         redirects to /home
         """
         return render_template("home.html")
-
-    @app.route("/upload-audio", methods=["POST"])
-    def upload_audio():
-        """
-        handles audio file upload
-        """
-        audio_file = request.files["audio"]
-        # For testing, just return a success message
-        return jsonify({"message": "Audio received!"})
-
-    @app.route("/predict", methods=["POST"])
-    def predict():
-        """
-        handles prediction
-        """
-        # for testing, just return a success message, until we implement the actual prediction
-        return jsonify({"message": "Prediction successful!"})
 
     return app
 

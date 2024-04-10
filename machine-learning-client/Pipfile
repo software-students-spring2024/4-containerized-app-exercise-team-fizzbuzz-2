@@ -16,8 +16,9 @@ black = "*"
 pymongo = "*"
 python-dotenv = "*"
 librosa = "*"
-soundfile = "*"
 torchaudio = "*"
+python-ffmpeg = "*"
+soundfile = "*"
 
 [dev-packages]
 
