@@ -73,6 +73,12 @@ jobs:
           pipenv --python ${{ matrix.python-version }}
           pipenv install pytest
           pipenv install
+
+          mongosh<<EOF
+          db = db.getSiblingDB("user");
+          db.createUser({ user: "user", pwd: "test", roles: [{ role: 'readWrite', db: "user" }] })
+          EOF
+          
           pipenv run python -m pytest
       - name: Test with pytest
         run: |
