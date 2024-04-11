@@ -2,17 +2,13 @@
 Webapp for providing API for communicating with machine learning client
 """
 
-import pymongo
+import os
+from bson.objectid import ObjectId
 from dotenv import dotenv_values
 from flask import Flask, jsonify, request
 import librosa
 from ffmpeg import FFmpeg
 import inference
-from nested_collections import NestedCollection
-
-# from Transcription import *
-# from Prompt import *
-from setup_mg import end_mgd, start_mgd
 
 # Loading development configurations
 config = dotenv_values(".env")
@@ -26,40 +22,33 @@ def create_app():
     app = Flask(__name__)
     app.secret_key = config["ML_FLASK_SECRET_KEY"]
 
-    mongo_uri = (
-        f'mongodb://{config["MONGODB_USER"]}:'
-        f'{config["MONGODB_PASSWORD"]}@{config["MONGODB_HOST"]}:'
-        f'{config["MONGODB_PORT"]}?authSource={config["MONGODB_AUTHSOURCE"]}'
-    )
+    # mongo_uri = (
+    #     f'mongodb://{config["MONGODB_USER"]}:'
+    #     f'{config["MONGODB_PASSWORD"]}@{config["MONGODB_HOST"]}:'
+    #     f'{config["MONGODB_PORT"]}?authSource={config["MONGODB_AUTHSOURCE"]}'
+    # )
 
-    print("not done")
+    # print("not done")
 
-    # Make a connection to the database server
-    connection = pymongo.MongoClient(mongo_uri)
+    # # Make a connection to the database server
+    # connection = pymongo.MongoClient(mongo_uri)
 
-    print("Done")
+    # print("Done")
 
-    print(connection)
+    # print(connection)
 
-    # Select a specific database on the server
-    db = connection[config["MONGODB_NAME"]]
+    # # Select a specific database on the server
+    # db = connection[config["MONGODB_NAME"]]
 
-    if not db.nested_collections.find_one({"name": "SE_Project4"}):
-        db.nested_collections.insert({"name": "SE_Project4", "children": []})
-    se4_db = NestedCollection("SE_Project4", db)
-
-    end_mgd(db, se4_db)
-    start_mgd(se4_db)
-
-    try:
-        # verify the connection works by pinging the database
-        connection.admin.command(
-            "ping"
-        )  # The ping command is cheap and does not require auth.
-        print(" *", "Connected to MongoDB!")  # if we get here, the connection worked!
-    except pymongo.errors.OperationFailure as err:
-        # the ping command failed, so the connection is not available.
-        print(" * MongoDB connection error:", err)  # debug
+    # try:
+    #     # verify the connection works by pinging the database
+    #     connection.admin.command(
+    #         "ping"
+    #     )  # The ping command is cheap and does not require auth.
+    #     print(" *", "Connected to MongoDB!")  # if we get here, the connection worked!
+    # except pymongo.errors.OperationFailure as err:
+    #     # the ping command failed, so the connection is not available.
+    #     print(" * MongoDB connection error:", err)  # debug
 
     @app.route("/api/transcribe", methods=["POST"])
     def upload_audio():
@@ -78,10 +67,11 @@ def create_app():
 
         # print(audio_file.filename)
 
-        if audio_file and audio_file.filename != "":
+        if audio_file:
             # Save the file on the server.
             audio_file.stream.seek(0)
-            audio_file.save("test.raw")
+            file_name = "audio" + str(ObjectId())
+            audio_file.save(file_name + ".raw")
 
             print("Managed")
 
@@ -89,7 +79,7 @@ def create_app():
 
             while not saved:
                 try:
-                    with open("test.raw", encoding="utf-8") as _:
+                    with open(file_name + ".raw", encoding="utf-8") as _:
                         saved = True
                 except OSError:
                     saved = False
@@ -97,9 +87,9 @@ def create_app():
             ffmpeg = (
                 FFmpeg()
                 .option("y")
-                .input("test.raw")
+                .input(file_name + ".raw")
                 .output(
-                    "test.mp3",
+                    file_name + ".mp3",
                     {"codec:v": "libx264"},
                     vf="scale=1280:-1",
                     preset="veryslow",
@@ -112,7 +102,9 @@ def create_app():
             ffmpeg.execute()
 
             # data, samplerate = sf.read('test.mp3')
-            data, sampling_rate = librosa.load("test.mp3", sr=16000)
+            data, sampling_rate = librosa.load(file_name + ".mp3", sr=16000)
+
+            os.remove(file_name + ".raw")
 
             transcription = inference.speech2textpipeline(data, sampling_rate)[0]
             print(transcription)
