@@ -36,6 +36,7 @@ jobs:
           mongosh --version
 
       - name: Initalize MongoDB
+        timeout-minutes: 5
         run: |
           mongosh --host localhost:27017 -u admin -p admin --authenticationDatabase admin <<EOF
           EOF
