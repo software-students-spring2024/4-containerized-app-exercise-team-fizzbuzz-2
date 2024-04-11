@@ -74,10 +74,10 @@ jobs:
           pipenv install pytest
           pipenv install
           pipenv run python -m pytest
-      - name: Test with pytest
-        run: |
-          cd web-app
-          pipenv run python -m pytest
+      # - name: Test with pytest
+      #   run: |
+      #     cd web-app
+      #     pipenv run python -m pytest
   push_to_registry:
     needs: [build]
     if: github.ref == 'refs/heads/main'
