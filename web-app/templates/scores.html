@@ -5,6 +5,10 @@
 <div id="table-div">
     {% if foundAny %}
         <table>
+            <tr>
+                <td>PRACTICE SENTENCE</td>
+                <td>ATTEMPTS</td>
+            </tr>
         {% for score in scores %}
             <tr>
                 <td>{{ score.get("key") }}<td>

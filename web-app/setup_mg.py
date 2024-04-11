@@ -45,11 +45,12 @@ def end_mgd(db, se4_db):
         Prompt.prompts.drop()
         Transcription.transcriptions.drop()
     except AttributeError:
+        print("Couldn't delete")
         return
 
     se4_db.remove_collection("transcriptions")
     se4_db.remove_collection("prompts")
 
-    db.nested_collections.drop({"name": "SE_PROJECT4"})
+    db.nested_collections.delete_one({"name": "SE_PROJECT4"})
 
     return

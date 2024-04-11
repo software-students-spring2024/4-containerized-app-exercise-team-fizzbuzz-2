@@ -68,6 +68,7 @@ const cardArea = document.querySelector(".card-area");
 
 let deck = [];
 let currentSentence = '';
+let score = 0;
 
 const statusText = document.querySelector('#status');
 
@@ -150,15 +151,41 @@ async function startRecording () {
             if(req.status >= 200 && req.status < 400) {
                 const transcription =JSON.parse(req.responseText);
                 console.log(transcription);
-                const s = score(transcription["transcription"]);
+                const s = score_response(transcription["transcription"]);
                 console.log(s);
                 if (s) {
+                    const score_request=new XMLHttpRequest();
+                    score_request.open('POST', '/api/store-score', false);
+
+                    const inputed = document.querySelector('#inputed');
+                    inputed.value = currentSentence;
+                    const scoreInput = document.querySelector('#score-input');
+                    scoreInput.value = score;
+                    console.log(scoreInput);
+                    console.log(score);
+
+                    const f = document.querySelector('#score-form');
+                    const data = new FormData(f);
+
+                    // Error handling
+                    score_request.addEventListener('load', function() {
+                        console.log(JSON.parse(req.responseText));
+                    });
+
+                    // Error handling
+                    score_request.addEventListener('error', function(e) {
+                        console.log('uh-oh, something went wrong ' + e);
+                    });
+
+                    score_request.send(data);
+
                     statusText.style.display = "";
                     statusText.textContent = "Correct!";
                     recordButton.style.display = "none";
                     if (deck.cards.length > 1) {
                         nextButton.style.display = '';
                         nextButton.addEventListener("click", () => {
+                            score = 0;
                             statusText.style.display = "";
                             statusText.textContent = "";
                             deck.deal();
@@ -205,7 +232,8 @@ async function startRecording () {
     }, 5000);
 }
 
-function score(sentence) {
+function score_response(sentence) {
+    score ++;
     console.log(currentSentence.toLowerCase(), sentence.toLowerCase());
     return currentSentence.toLowerCase() === sentence.toLowerCase();
 }

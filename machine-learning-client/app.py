@@ -2,16 +2,13 @@
 Webapp for providing API for communicating with machine learning client
 """
 
-import pymongo
+import os
+from bson.objectid import ObjectId
 from dotenv import dotenv_values
 from flask import Flask, jsonify, request
 import librosa
 from ffmpeg import FFmpeg
 import inference
-
-# from Transcription import *
-# from Prompt import *
-from setup_mg import end_mgd, start_mgd
 
 # Loading development configurations
 config = dotenv_values(".env")
@@ -70,10 +67,11 @@ def create_app():
 
         # print(audio_file.filename)
 
-        if audio_file and audio_file.filename != "":
+        if audio_file:
             # Save the file on the server.
             audio_file.stream.seek(0)
-            audio_file.save("test.raw")
+            file_name = "audio" + str(ObjectId())
+            audio_file.save(file_name + ".raw")
 
             print("Managed")
 
@@ -81,7 +79,7 @@ def create_app():
 
             while not saved:
                 try:
-                    with open("test.raw", encoding="utf-8") as _:
+                    with open(file_name + ".raw", encoding="utf-8") as _:
                         saved = True
                 except OSError:
                     saved = False
@@ -89,9 +87,9 @@ def create_app():
             ffmpeg = (
                 FFmpeg()
                 .option("y")
-                .input("test.raw")
+                .input(file_name + ".raw")
                 .output(
-                    "test.mp3",
+                    file_name + ".mp3",
                     {"codec:v": "libx264"},
                     vf="scale=1280:-1",
                     preset="veryslow",
@@ -104,7 +102,9 @@ def create_app():
             ffmpeg.execute()
 
             # data, samplerate = sf.read('test.mp3')
-            data, sampling_rate = librosa.load("test.mp3", sr=16000)
+            data, sampling_rate = librosa.load(file_name + ".mp3", sr=16000)
+
+            os.remove(file_name + ".raw")
 
             transcription = inference.speech2textpipeline(data, sampling_rate)[0]
             print(transcription)

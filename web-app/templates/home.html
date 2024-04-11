@@ -16,6 +16,11 @@
         <a href="/scores" id="view_scores" class="active" style="display: none;">View Scores</a>
     </div>
 
+    <form style = "display: none;" id="score-form" type="number">
+        <input name="score-input" id = "score-input"/>
+        <input name="inputed" id = "inputed"/>
+    </form>
+
     <script src="{{ url_for('static', filename='js/client.js') }}"></script>
 
 {% endblock %}
