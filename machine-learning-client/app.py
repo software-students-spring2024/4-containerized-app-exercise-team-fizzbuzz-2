@@ -28,19 +28,17 @@ def create_app():
         handles audio file upload
         """
 
+        print(request.files)
+
         audio_file = request.files.get("audio")
 
         print(audio_file)
-
-        # print(audio_file.filename)
 
         if audio_file:
             # Save the file on the server.
             audio_file.stream.seek(0)
             file_name = "audio" + str(ObjectId())
             audio_file.save(file_name + ".raw")
-
-            print("Managed")
 
             saved = False
 
@@ -64,14 +62,13 @@ def create_app():
                 )
             )
 
-            print("To")
-
             ffmpeg.execute()
 
             # data, samplerate = sf.read('test.mp3')
             data, sampling_rate = librosa.load(file_name + ".mp3", sr=16000)
 
             os.remove(file_name + ".raw")
+            os.remove(file_name + ".mp3")
 
             transcription = inference.speech2textpipeline(data, sampling_rate)[0]
             print(transcription)

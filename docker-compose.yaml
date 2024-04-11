@@ -21,7 +21,7 @@ services:
   web-app:
     build: ./web-app # build the Docker image from the Dockerfile in the back-end directory
     ports:
-      - 5001:5000 # map port 5000 of host machine to port 5000 of container
+      - 5000:5000 # map port 5000 of host machine to port 5000 of container
     env_file: ./.env
     environment:
       - DB_HOST=mongodb_server

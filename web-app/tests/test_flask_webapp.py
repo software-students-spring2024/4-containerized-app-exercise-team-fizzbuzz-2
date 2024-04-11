@@ -2,8 +2,8 @@
     Tests for functions used in the webapp
 """
 
-import pytest
 import json
+import pytest
 from app import create_app, Prompt, Transcription, Scoring, end_mgd
 
 
@@ -87,7 +87,6 @@ class Tests:
 
         assert found
 
-    
     def test_home(self, app):
         """
         tests whether api works at creating app
