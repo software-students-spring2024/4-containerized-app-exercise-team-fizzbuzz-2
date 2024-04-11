@@ -39,8 +39,8 @@ jobs:
         timeout-minutes: 5
         run: |
           mongosh<<EOF
-          db = db.getSiblingDB(${{ secrets.MONGODB_USER }});
-          db.createUser({ user: ${{ secrets.MONGODB_USER }}, pwd: ${{ secrets.MONGODB_PASSWORD }}, roles: [{ role: 'readWrite', db: ${{ secrets.MONGODB_USER }} }] })
+          db = db.getSiblingDB("user");
+          db.createUser({ user: "user", pwd: "test", roles: [{ role: 'readWrite', db: "user" }] })
           EOF
           
       - name: Set up Python ${{ matrix.python-version }}
@@ -51,12 +51,12 @@ jobs:
         run: |
           cd web-app
           touch .env
-          echo MONGODB_USER=${{ secrets.MONGODB_USER }} >> .env
-          echo MONGODB_PASSWORD=${{ secrets.MONGODB_PASSWORD }} >> .env
-          echo MONGODB_HOST=${{ secrets.MONGODB_HOST }} >> .env
-          echo MONGODB_NAME=${{ secrets.MONGODB_NAME }} >> .env
-          echo MONGODB_PORT=${{ secrets.MONGODB_PORT }} >> .env
-          echo MONGODB_AUTHSOURCE=${{ secrets.MONGODB_AUTHSOURCE }} >> .env
+          echo MONGODB_USER=user >> .env
+          echo MONGODB_PASSWORD=test >> .env
+          echo MONGODB_HOST=localhost >> .env
+          echo MONGODB_NAME=user >> .env
+          echo MONGODB_PORT=27017 >> .env
+          echo MONGODB_AUTHSOURCE=da2863 >> .env
           echo WEBAPP_FLASK_PORT=${{ secrets.WEBAPP_FLASK_PORT }} >> .env
           echo WEBAPP_FLASK_APP=${{ secrets.WEBAPP_FLASK_APP }} >> .env
           echo WEBAPP_FLASK_ENV=${{ secrets.WEBAPP_FLASK_ENV }} >> .env
