@@ -1,8 +1,8 @@
 ![Lint-free](https://github.com/nyu-software-engineering/containerized-app-exercise/actions/workflows/lint.yml/badge.svg)
 
-![CI-CD-ml workflow](https://github.com/software-students-spring2024/4-containerized-app-exercise-team-fizzbuzz-2/actions/workflows/CI-CD-ml.yml/badge.svg)
+![CI-CD-ml workflow](https://github.com/software-students-spring2024/4-containerized-app-exercise-team-fizzbuzz-2/actions/workflows/CI-CD-ml.yml/badge.svg) - ML Client
 
-![CI-CD-webapp workflow](https://github.com/software-students-spring2024/4-containerized-app-exercise-team-fizzbuzz-2/actions/workflows/CI-CD-webapp.yml/badge.svg)
+![CI-CD-webapp workflow](https://github.com/software-students-spring2024/4-containerized-app-exercise-team-fizzbuzz-2/actions/workflows/CI-CD-webapp.yml/badge.svg) - Flask Web App
 
 # Monolingo
 
