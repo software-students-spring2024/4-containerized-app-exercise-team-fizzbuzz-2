@@ -38,7 +38,7 @@ jobs:
       - name: Initalize MongoDB
         timeout-minutes: 5
         run: |
-          mongosh mongodb://${{ secrets.MONGODB_USER }}:${{ secrets.MONGODB_PASSWORD }}@${{ secrets.MONGODB_HOST }}:${{ secrets.MONGODB_PORT }}?authSource=${{ secrets.MONGODB_AUTHSOURCE }}
+          mongosh
           
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
