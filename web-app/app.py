@@ -20,29 +20,21 @@ async def connect_to_mongo(app):
     """
     Connects to mongoDB asyncronously
     """
-    mongo_uri = (
-        f'mongodb://{config["MONGODB_USER"]}:'
-        f'{config["MONGODB_PASSWORD"]}@{config["MONGODB_HOST"]}:'
-        f'{config["MONGODB_PORT"]}?authSource={config["MONGODB_AUTHSOURCE"]}'
-    )
+
+    mongo_uri = ""
+
+    if config["MODE"] == "test":
+        mongo_uri = "mongodb://127.0.0.1:27017/?directConnection=true"
+        print(mongo_uri)
+    else:
+        mongo_uri = (
+            f'mongodb://{config["MONGODB_USER"]}:'
+            f'{config["MONGODB_PASSWORD"]}@{config["MONGODB_HOST"]}:'
+            f'{config["MONGODB_PORT"]}?authSource={config["MONGODB_AUTHSOURCE"]}'
+        )
 
     # Make a connection to the database server
     connection = pymongo.MongoClient(mongo_uri)
-
-    # Select a specific database on the server
-    db = connection[config["MONGODB_NAME"]]
-
-    if not db.nested_collections.find_one({"name": "SE_Project4"}):
-        db.nested_collections.insert({"name": "SE_Project4", "children": []})
-    se4_db = NestedCollection("SE_Project4", db)
-
-    start_mgd(se4_db)
-    end_mgd(db, se4_db)
-    if not db.nested_collections.find_one({"name": "SE_Project4"}):
-        db.nested_collections.insert({"name": "SE_Project4", "children": []})
-    se4_db = NestedCollection("SE_Project4", db)
-    se4_db = NestedCollection("SE_Project4", db)
-    start_mgd(se4_db)
 
     try:
         # verify the connection works by pinging the database
@@ -50,12 +42,30 @@ async def connect_to_mongo(app):
             "ping"
         )  # The ping command is cheap and does not require auth.
         print(" *", "Connected to MongoDB!")  # if we get here, the connection worked!
-        app.connected = True
-        app.db = db
-        app.se4_db = se4_db
     except pymongo.errors.OperationFailure as e:
         # the ping command failed, so the connection is not available.
         print(" * MongoDB connection error:", e)  # debug
+
+    # Select a specific database on the server
+    db = connection[config["MONGODB_NAME"]]
+
+    print(db.test_collection.find_one({}))
+
+    if not db.nested_collections.find_one({"name": "SE_Project4"}):
+        db.nested_collections.insert_one({"name": "SE_Project4", "children": []})
+    se4_db = NestedCollection("SE_Project4", db)
+
+    start_mgd(se4_db)
+    end_mgd(db, se4_db)
+    if not db.nested_collections.find_one({"name": "SE_Project4"}):
+        db.nested_collections.insert_one({"name": "SE_Project4", "children": []})
+    se4_db = NestedCollection("SE_Project4", db)
+    se4_db = NestedCollection("SE_Project4", db)
+    start_mgd(se4_db)
+
+    app.connected = True
+    app.db = db
+    # app.se4_db = se4_db
 
 
 def create_app():
