@@ -22,44 +22,11 @@ def create_app():
     app = Flask(__name__)
     app.secret_key = config["ML_FLASK_SECRET_KEY"]
 
-    # mongo_uri = (
-    #     f'mongodb://{config["MONGODB_USER"]}:'
-    #     f'{config["MONGODB_PASSWORD"]}@{config["MONGODB_HOST"]}:'
-    #     f'{config["MONGODB_PORT"]}?authSource={config["MONGODB_AUTHSOURCE"]}'
-    # )
-
-    # print("not done")
-
-    # # Make a connection to the database server
-    # connection = pymongo.MongoClient(mongo_uri)
-
-    # print("Done")
-
-    # print(connection)
-
-    # # Select a specific database on the server
-    # db = connection[config["MONGODB_NAME"]]
-
-    # try:
-    #     # verify the connection works by pinging the database
-    #     connection.admin.command(
-    #         "ping"
-    #     )  # The ping command is cheap and does not require auth.
-    #     print(" *", "Connected to MongoDB!")  # if we get here, the connection worked!
-    # except pymongo.errors.OperationFailure as err:
-    #     # the ping command failed, so the connection is not available.
-    #     print(" * MongoDB connection error:", err)  # debug
-
     @app.route("/api/transcribe", methods=["POST"])
     def upload_audio():
         """
         handles audio file upload
         """
-
-        # audio_file = request.files.get('audio')
-        # print(audio_file)
-        # file_type = request.form.get("type", "wav")
-        # print(file_type)
 
         audio_file = request.files.get("audio")
 

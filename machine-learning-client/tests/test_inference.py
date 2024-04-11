@@ -7,19 +7,12 @@ Author: Firas Darwish
 """
 
 import pytest
+import json
 from datasets import load_dataset
 from inference import speech2textpipeline
+from app import create_app
 
 # from app import create_app
-
-
-@pytest.fixture
-def test_fixture():
-    """
-    sample test with pytest.fixture
-    """
-    print(1)
-
 
 def test_inference():
     """
@@ -84,24 +77,37 @@ def test_multiple_audio_lengths():
     assert isinstance(transcription_long, list)
     assert len(transcription_short[0]) < len(transcription_long[0])
 
+    @pytest.fixture
+    def app(self):
+        """
+        Creates an app
+        """
 
-# class Tests:
-#     """Class defines tests"""
+        app = create_app()
 
-# def test_api(self):
-#     """
-#     tests whether api works at creating app
-#     """
-#     flask_a = create_app()
+        app.config.update(
+            {
+                "TESTING": True,
+            }
+        )
 
-#     # Create a test client using the Flask application configured for testing
-#     with flask_a.test_client() as test_client:
-#         response = test_client.get("/test")
-#         assert response.status_code == 200
+        # other setup can go here
 
-#         # Check if the response content type is JSON
-#         print(response.content_type)
-#         assert response.content_type == "application/json"
-#         # Check if the response contains the expected key
-#         data = json.loads(response.data.decode("utf-8"))
-#         assert "transcription" in data
+        yield app
+
+    def test_api(self, app):
+        """
+        tests whether api works at creating app
+        """
+
+        # Create a test client using the Flask application configured for testing
+        with app.test_client() as test_client:
+            response = test_client.get("/test")
+            assert response.status_code == 200
+
+            # Check if the response content type is JSON
+            print(response.content_type)
+            assert response.content_type == "application/json"
+            # Check if the response contains the expected key
+            data = json.loads(response.data.decode("utf-8"))
+            assert "transcription" in data

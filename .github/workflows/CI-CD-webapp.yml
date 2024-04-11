@@ -13,8 +13,8 @@ jobs:
           # I think MONOGDB_INITDB_DATABASE has no effect in here (see https://hub.docker.com/_/mongo, section MONGO_INITDB_DATABASE)
           MONGO_INITDB_DATABASE: ${{ secrets.MONGODB_HOST }}
         ports:
-          - ${{ secrets.MONGODB_PORT }}:${{ secrets.MONGODB_PORT }}
-        options: >-
+          - 27017:27017
+        options:
           --health-cmd mongo
           --health-interval 10s
           --health-timeout 5s
