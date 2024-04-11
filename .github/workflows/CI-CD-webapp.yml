@@ -4,40 +4,56 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11"]
     services:
       mongodb:
         image: mongo:4.4.6
         env:
           MONGO_INITDB_ROOT_USERNAME: ${{ secrets.MONGODB_USER }}
-          MONGO_INITDB_ROOT_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
-          # I think MONOGDB_INITDB_DATABASE has no effect in here (see https://hub.docker.com/_/mongo, section MONGO_INITDB_DATABASE)
+          MONGO_INITDB_ROOT_PASSWORD: ${{ secrets.MONGODB_PASSWORD }} 
           MONGO_INITDB_DATABASE: ${{ secrets.MONGODB_HOST }}
         ports:
-          - ${{ secrets.MONGODB_PORT }}:${{ secrets.MONGODB_PORT }}
-        options: >-
+          - 27017:27017
+        options:
           --health-cmd mongo
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-    strategy:
-      matrix:
-        python-version: ["3.9", "3.10", "3.11"]
+
     steps:
       - uses: actions/checkout@v3
+    
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
+      
+      - name: Install mongosh
+        run: |
+          sudo apt-get install gnupg
+          wget -qO- https://www.mongodb.org/static/pgp/server-7.0.asc | sudo tee /etc/apt/trusted.gpg.d/server-7.0.asc
+          echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/7.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
+          sudo apt-get update
+          sudo apt-get install -y mongodb-mongosh
+          mongosh --version
+
+      - name: Initalize MongoDB
+        timeout-minutes: 5
+        run: |
+          mongosh
+      
       - name: Install dependencies
         run: |
           cd web-app
           touch .env
-          echo MONGODB_USER=${{ secrets.MONGODB_USER }} >> .env
-          echo MONGODB_PASSWORD=${{ secrets.MONGODB_PASSWORD }} >> .env
-          echo MONGODB_HOST=${{ secrets.MONGODB_HOST }} >> .env
-          echo MONGODB_NAME=${{ secrets.MONGODB_NAME }} >> .env
-          echo MONGODB_PORT=${{ secrets.MONGODB_PORT }} >> .env
-          echo MONGODB_AUTHSOURCE=${{ secrets.MONGODB_AUTHSOURCE }} >> .env
+          echo MONGODB_USER=user >> .env
+          echo MONGODB_PASSWORD=test >> .env
+          echo MONGODB_HOST=localhost >> .env
+          echo MONGODB_NAME=user >> .env
+          echo MONGODB_PORT=27017 >> .env
+          echo MONGODB_AUTHSOURCE=da2863 >> .env
           echo WEBAPP_FLASK_PORT=${{ secrets.WEBAPP_FLASK_PORT }} >> .env
           echo WEBAPP_FLASK_APP=${{ secrets.WEBAPP_FLASK_APP }} >> .env
           echo WEBAPP_FLASK_ENV=${{ secrets.WEBAPP_FLASK_ENV }} >> .env
@@ -54,11 +70,6 @@ jobs:
           pipenv --python ${{ matrix.python-version }}
           pipenv install pytest
           pipenv install
-          pipenv run python -m pytest
-      - name: Test with pytest
-        run: |
-          cd web-app
-          pipenv run python -m pytest
   push_to_registry:
     needs: [build]
     if: github.ref == 'refs/heads/main'

@@ -2,6 +2,7 @@
     Tests for functions used in the webapp
 """
 
+import json
 import pytest
 from app import create_app, Prompt, Transcription, Scoring, end_mgd
 
@@ -85,3 +86,61 @@ class Tests:
             print(f)
 
         assert found
+
+    def test_home(self, app):
+        """
+        tests whether api works at creating app
+        """
+
+        # Create a test client using the Flask application configured for testing
+        with app.test_client() as test_client:
+            response = test_client.get("/")
+            assert response.status_code == 200
+
+            # Check if the response content type is JSON
+            assert "text/html" in response.content_type
+
+    # def test_display_scores(self, app):
+    #     """
+    #     tests whether api works at creating app
+    #     """
+
+    #     # Create a test client using the Flask application configured for testing
+    #     with app.test_client() as test_client:
+    #         response = test_client.get("/scores")
+    #         assert response.status_code == 200
+
+    #         # Check if the response content type is JSON
+    #         assert "text/html" in response.content_type
+
+    def test_cards_api(self, app):
+        """
+        tests whether api works at creating app
+        """
+
+        # Create a test client using the Flask application configured for testing
+        with app.test_client() as test_client:
+            response = test_client.get("/api/cards")
+            assert response.status_code == 200
+
+            # Check if the response content type is JSON
+            assert response.content_type == "application/json"
+
+            data = json.loads(response.data.decode("utf-8"))
+            assert "cards" in data
+
+    # def test_store_score_api(self, app):
+    #     """
+    #     tests whether api works at creating app
+    #     """
+
+    #     # Create a test client using the Flask application configured for testing
+    #     with app.test_client() as test_client:
+    #         response = test_client.post("/api/store-score")
+    #         assert response.status_code == 200
+
+    #         # Check if the response content type is JSON
+    #         assert response.content_type == "application/json"
+
+    #         data = json.loads(response.data.decode("utf-8"))
+    #         assert "message" in data

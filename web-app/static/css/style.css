@@ -6,6 +6,7 @@
     /* font-family: "Micro 5", sans-serif; */
     font-weight: 400;
     font-style: normal;
+    font-family: "Courier", sans-serif;
 }
 
 html, body {
@@ -38,7 +39,6 @@ form {
     border: 5px solid rgb(45, 14, 41);
     /* border-radius: 25px; */
     font-size: xx-large;
-    font-family: "Micro 5", sans-serif;
 
 }
 
@@ -74,15 +74,12 @@ h1 {
     color: rgb(99, 41, 92);
     font-size: 50px;
     font-weight: bold;
-    font-family: "Micro 5", sans-serif;
 }
 
 .card-area {
     width: 100%;
     height: fit-content;
-    padding: 10px;
-    font-family: 'Courier New', Courier, monospace;
-    
+    padding: 10px;    
 }
 
 .card {
@@ -94,7 +91,6 @@ h1 {
     border: 5px solid black;
     background-color: white;
     rotate: 0 0 1 0deg;
-    font-family: 'Courier New', Courier, monospace;
 }
   
 .card-header {
@@ -115,35 +111,29 @@ h1 {
 header a {
     color: hotpink;
     text-decoration: none;
-    font-family: "Micro 5", sans-serif;
 }
 
 header a:hover {
     color: rgb(99, 41, 92);
-    font-family: "Micro 5", sans-serif;
 }
 
 header a:active {
     color: rgb(59, 17, 54);
-    font-family: "Micro 5", sans-serif;
 }
 
 header ul {
     list-style-type: none;
     overflow: hidden;
     text-align: center;
-    font-family: "Micro 5", sans-serif;
 }
 
 header li {
     display: inline;
-    font-family: "Micro 5", sans-serif;
 }
 
 header li a {
     vertical-align: middle;
     display: inline-block;
-    font-family: "Micro 5", sans-serif;
 }
 
 header img {
@@ -160,13 +150,11 @@ header {
     line-height: 1.5;
     background-color: rgb(240, 225, 228);
     font-size: 100px;
-    font-family: "Micro 5", sans-serif;
 }
 
 /* Creating navigation bar */
 .navigation a.active {
     background-color: white;
-    font-family: "Micro 5", sans-serif;
 }
 
 .navigation a:link, a:visited {
@@ -178,18 +166,15 @@ header {
     text-align: center;
     text-decoration: none;
     display: inline-block;
-    font-family: "Micro 5", sans-serif;
 }
 
 .navigation a:hover, a:active {
     background-color: rgb(170, 110, 163);
     color: white;
-    font-family: "Micro 5", sans-serif;
 }
 
 .navigation {
     margin: 18px;
-    font-family: "Micro 5", sans-serif;
 }
 
 .navigation ul {

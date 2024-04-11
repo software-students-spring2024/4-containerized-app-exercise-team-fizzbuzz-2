@@ -6,19 +6,14 @@ This module tests the inference module.
 Author: Firas Darwish
 """
 
+import json
+import io
 import pytest
 from datasets import load_dataset
 from inference import speech2textpipeline
+from app import create_app
 
 # from app import create_app
-
-
-@pytest.fixture
-def test_fixture():
-    """
-    sample test with pytest.fixture
-    """
-    print(1)
 
 
 def test_inference():
@@ -85,23 +80,53 @@ def test_multiple_audio_lengths():
     assert len(transcription_short[0]) < len(transcription_long[0])
 
 
-# class Tests:
-#     """Class defines tests"""
+class Tests:
+    """Class defines tests"""
 
-# def test_api(self):
-#     """
-#     tests whether api works at creating app
-#     """
-#     flask_a = create_app()
+    @pytest.fixture
+    def app(self):
+        """
+        Creates an app
+        """
 
-#     # Create a test client using the Flask application configured for testing
-#     with flask_a.test_client() as test_client:
-#         response = test_client.get("/test")
-#         assert response.status_code == 200
+        app = create_app()
 
-#         # Check if the response content type is JSON
-#         print(response.content_type)
-#         assert response.content_type == "application/json"
-#         # Check if the response contains the expected key
-#         data = json.loads(response.data.decode("utf-8"))
-#         assert "transcription" in data
+        app.config.update(
+            {
+                "TESTING": True,
+            }
+        )
+
+        # other setup can go here
+
+        yield app
+
+    def test_api(self, app):
+        """
+        tests whether api works at creating app
+        """
+
+        headers = {"Content-Type": "multipart/form-data"}
+
+        buffer = None
+
+        with open("test.raw", "rb") as f:
+            buffer = io.BytesIO(f.read())
+
+        data = {}
+
+        data["audio"] = (buffer, "audio")
+
+        # Create a test client using the Flask application configured for testing
+        with app.test_client() as test_client:
+            response = test_client.post("/api/transcribe", data=data, headers=headers)
+
+            assert response.status_code == 200
+
+            # Check if the response content type is JSON
+            assert response.content_type == "application/json"
+            # Check if the response contains the expected key
+            data = json.loads(response.data.decode("utf-8"))
+            assert "transcription" in data
+
+            assert "down with containers" in data.values()

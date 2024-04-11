@@ -22,58 +22,23 @@ def create_app():
     app = Flask(__name__)
     app.secret_key = config["ML_FLASK_SECRET_KEY"]
 
-    # mongo_uri = (
-    #     f'mongodb://{config["MONGODB_USER"]}:'
-    #     f'{config["MONGODB_PASSWORD"]}@{config["MONGODB_HOST"]}:'
-    #     f'{config["MONGODB_PORT"]}?authSource={config["MONGODB_AUTHSOURCE"]}'
-    # )
-
-    # print("not done")
-
-    # # Make a connection to the database server
-    # connection = pymongo.MongoClient(mongo_uri)
-
-    # print("Done")
-
-    # print(connection)
-
-    # # Select a specific database on the server
-    # db = connection[config["MONGODB_NAME"]]
-
-    # try:
-    #     # verify the connection works by pinging the database
-    #     connection.admin.command(
-    #         "ping"
-    #     )  # The ping command is cheap and does not require auth.
-    #     print(" *", "Connected to MongoDB!")  # if we get here, the connection worked!
-    # except pymongo.errors.OperationFailure as err:
-    #     # the ping command failed, so the connection is not available.
-    #     print(" * MongoDB connection error:", err)  # debug
-
     @app.route("/api/transcribe", methods=["POST"])
     def upload_audio():
         """
         handles audio file upload
         """
 
-        # audio_file = request.files.get('audio')
-        # print(audio_file)
-        # file_type = request.form.get("type", "wav")
-        # print(file_type)
+        print(request.files)
 
         audio_file = request.files.get("audio")
 
         print(audio_file)
-
-        # print(audio_file.filename)
 
         if audio_file:
             # Save the file on the server.
             audio_file.stream.seek(0)
             file_name = "audio" + str(ObjectId())
             audio_file.save(file_name + ".raw")
-
-            print("Managed")
 
             saved = False
 
@@ -97,14 +62,13 @@ def create_app():
                 )
             )
 
-            print("To")
-
             ffmpeg.execute()
 
             # data, samplerate = sf.read('test.mp3')
             data, sampling_rate = librosa.load(file_name + ".mp3", sr=16000)
 
             os.remove(file_name + ".raw")
+            os.remove(file_name + ".mp3")
 
             transcription = inference.speech2textpipeline(data, sampling_rate)[0]
             print(transcription)
