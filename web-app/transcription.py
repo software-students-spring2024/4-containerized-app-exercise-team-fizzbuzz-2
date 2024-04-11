@@ -13,7 +13,7 @@ class Transcription:
     class implementation for transcriptions
     """
 
-    transcriptions: collection = None
+    transcriptions: collection
 
     def __init__(
         self, inputed: AnyStr, solution: AnyStr, scoring: Scoring, idef: ObjectId = None
@@ -24,12 +24,10 @@ class Transcription:
         self.inputed = inputed
         self.solution = solution
         self.scoring = scoring
-        if idef:
-            self.idef = idef
-        else:
+        if not idef:
             Transcription.transcriptions.insert_one(self.to_bson())
             self.idef = Transcription.transcriptions.find_one(
-                {"transcription": self.inputed}
+                {"inputed": self.inputed}
             )["_id"]
 
     def update_db(self):
@@ -49,12 +47,12 @@ class Transcription:
         convert object to BSON
         """
         bson_dict = {}
-        if hasattr(self, "id"):
+        if hasattr(self, "idef"):
             bson_dict["_id"] = self.idef
-            bson_dict["inputed"] = self.inputed
-            bson_dict["solution"] = self.solution
-            bson_dict["cookie"] = self.scoring.cookie
-            bson_dict["score"] = self.scoring.score
+        bson_dict["inputed"] = self.inputed
+        bson_dict["solution"] = self.solution
+        bson_dict["cookie"] = self.scoring.cookie
+        bson_dict["score"] = self.scoring.score
         return bson_dict
 
     def from_bson(self, bson_dict: Dict) -> Transcription:

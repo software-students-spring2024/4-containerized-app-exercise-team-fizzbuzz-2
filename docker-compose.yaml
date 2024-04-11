@@ -17,8 +17,6 @@ services:
       - WEBAPP_APP=$WEBAPP_FLASK_APP
       - WEBAPP_ENV=$WEBAPP_FLASK_ENV
       - WEBAPP_SECRET_KEY=$WEBAPP_FLASK_SECRET_KEY
-    depends_on:
-      - mongodb
 
   web-app:
     build: ./web-app # build the Docker image from the Dockerfile in the back-end directory
