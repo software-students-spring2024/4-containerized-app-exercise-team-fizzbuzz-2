@@ -23,15 +23,15 @@ async def connect_to_mongo(app):
 
     mongo_uri = ""
 
-    if config["MODE"] == "test":
-        mongo_uri = "mongodb://127.0.0.1:27017/?directConnection=true"
-        print(mongo_uri)
-    else:
-        mongo_uri = (
-            f'mongodb://{config["MONGODB_USER"]}:'
-            f'{config["MONGODB_PASSWORD"]}@{config["MONGODB_HOST"]}:'
-            f'{config["MONGODB_PORT"]}?authSource={config["MONGODB_AUTHSOURCE"]}'
-        )
+    # if config["MODE"] == "test":
+    #     mongo_uri = "mongodb://127.0.0.1:27017/?directConnection=true"
+    #     print(mongo_uri)
+    # else:
+    mongo_uri = (
+        f'mongodb://{config["MONGODB_USER"]}:'
+        f'{config["MONGODB_PASSWORD"]}@{config["MONGODB_HOST"]}:'
+        f'{config["MONGODB_PORT"]}?authSource={config["MONGODB_AUTHSOURCE"]}'
+    )
 
     # Make a connection to the database server
     connection = pymongo.MongoClient(mongo_uri)

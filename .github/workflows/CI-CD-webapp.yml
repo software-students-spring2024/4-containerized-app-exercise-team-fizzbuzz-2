@@ -38,7 +38,10 @@ jobs:
       - name: Initalize MongoDB
         timeout-minutes: 5
         run: |
-          mongosh
+          mongosh --host localhost:27017 -u admin -p admin --authenticationDatabase admin <<EOF
+          db = db.getSiblingDB(${{ secrets.MONGODB_USER }});
+          db.createUser({ user: ${{ secrets.MONGODB_USER }}, pwd: ${{ secrets.MONGODB_PASSWORD }}, roles: [{ role: 'readWrite', db: ${{ secrets.MONGODB_USER }} }] })
+          EOF
           
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
@@ -62,7 +65,6 @@ jobs:
           echo ML_FLASK_APP=${{ secrets.ML_FLASK_APP }} >> .env
           echo ML_FLASK_ENV=${{ secrets.ML_FLASK_ENV }} >> .env
           echo ML_FLASK_SECRET_KEY=${{ secrets.ML_FLASK_SECRET_KEY }} >> .env
-          echo MODE=test >> .env
 
           cat .env
           
