@@ -6,7 +6,6 @@ name = "pypi"
 [packages]
 pylint = "*"
 black = "*"
-flask = "*"
 python-dotenv = "*"
 flask-login = "*"
 passlib = "*"
@@ -18,6 +17,9 @@ dill = "*"
 exceptiongroup = "*"
 config = "*"
 pymongo = "*"
+coverage = "*"
+pytest-asyncio = "*"
+flask = {extras = ["async"], version = "*"}
 
 [dev-packages]
 pylint = "*"

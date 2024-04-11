@@ -24,51 +24,30 @@ class Transcription:
         self.inputed = inputed
         self.solution = solution
         self.scoring = scoring
+        self.idef = idef
         if not idef:
-            Transcription.transcriptions.insert_one(self.to_bson())
-            self.idef = Transcription.transcriptions.find_one(
-                {"inputed": self.inputed}
-            )["_id"]
-
-    def update_db(self):
-        """
-        update database automatically
-        """
-        Transcription.transcriptions.replace_one({"_id": self.idef}, self.to_bson())
-
-    def get_idef(self):
-        """
-        get the id of a transcription object
-        """
-        return str(self.idef)
+            self.idef = Transcription.transcriptions.insert_one(
+                self.to_bson()
+            ).inserted_id
 
     def to_bson(self) -> Dict:
         """
         convert object to BSON
         """
         bson_dict = {}
-        if hasattr(self, "idef"):
+        if self.idef:
             bson_dict["_id"] = self.idef
         bson_dict["inputed"] = self.inputed
         bson_dict["solution"] = self.solution
-        bson_dict["cookie"] = self.scoring.cookie
-        bson_dict["score"] = self.scoring.score
+        bson_dict["cookie"] = self.scoring.get_cookie()
+        bson_dict["score"] = self.scoring.get_score()
         return bson_dict
 
-    def from_bson(self, bson_dict: Dict) -> Transcription:
+    def get_inputed(self):
         """
-        create and return object from BSON
+        inputted getter function
         """
-        if not bson_dict:
-            return None
-        cookie = bson_dict["cookie"]
-        score = bson_dict["score"]
-        return Transcription(
-            inputed=bson_dict["inputed"],
-            solution=bson_dict["solution"],
-            idef=bson_dict["_id"],
-            scoring=Scoring(cookie, score),
-        )
+        return self.inputed
 
 
 class Scoring:

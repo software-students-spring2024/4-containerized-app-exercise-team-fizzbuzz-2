@@ -4,6 +4,21 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    services:
+      mongodb:
+        image: mongo:4.4.6
+        env:
+          MONGO_INITDB_ROOT_USERNAME: ${{ secrets.MONGODB_USER }}
+          MONGO_INITDB_ROOT_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
+          # I think MONOGDB_INITDB_DATABASE has no effect in here (see https://hub.docker.com/_/mongo, section MONGO_INITDB_DATABASE)
+          MONGO_INITDB_DATABASE: ${{ secrets.MONGODB_HOST }}
+        ports:
+          - ${{ secrets.MONGODB_PORT }}:${{ secrets.MONGODB_PORT }}
+        options: >-
+          --health-cmd mongo
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     strategy:
       matrix:
         python-version: ["3.9", "3.10", "3.11"]
@@ -16,6 +31,24 @@ jobs:
       - name: Install dependencies
         run: |
           cd web-app
+          touch .env
+          echo MONGODB_USER=${{ secrets.MONGODB_USER }} >> .env
+          echo MONGODB_PASSWORD=${{ secrets.MONGODB_PASSWORD }} >> .env
+          echo MONGODB_HOST=${{ secrets.MONGODB_HOST }} >> .env
+          echo MONGODB_NAME=${{ secrets.MONGODB_NAME }} >> .env
+          echo MONGODB_PORT=${{ secrets.MONGODB_PORT }} >> .env
+          echo MONGODB_AUTHSOURCE=${{ secrets.MONGODB_AUTHSOURCE }} >> .env
+          echo WEBAPP_FLASK_PORT=${{ secrets.WEBAPP_FLASK_PORT }} >> .env
+          echo WEBAPP_FLASK_APP=${{ secrets.WEBAPP_FLASK_APP }} >> .env
+          echo WEBAPP_FLASK_ENV=${{ secrets.WEBAPP_FLASK_ENV }} >> .env
+          echo WEBAPP_FLASK_SECRET_KEY=${{ secrets.WEBAPP_FLASK_SECRET_KEY }} >> .env
+          echo ML_FLASK_PORT=${{ secrets.ML_FLASK_PORT }} >> .env
+          echo ML_FLASK_APP=${{ secrets.ML_FLASK_APP }} >> .env
+          echo ML_FLASK_ENV=${{ secrets.ML_FLASK_ENV }} >> .env
+          echo ML_FLASK_SECRET_KEY=${{ secrets.ML_FLASK_SECRET_KEY }} >> .env
+
+          cat .env
+          
           python -m pip install --upgrade pip
           pip install --user pipenv
           pipenv --python ${{ matrix.python-version }}

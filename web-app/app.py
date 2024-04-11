@@ -16,14 +16,10 @@ from prompt import Prompt
 config = dotenv_values(".env")
 
 
-def create_app():
+async def connect_to_mongo(app):
     """
-    returns a flask app
+    Connects to mongoDB asyncronously
     """
-    # Make flask app
-    app = Flask(__name__)
-    app.secret_key = config["WEBAPP_FLASK_SECRET_KEY"]
-
     mongo_uri = (
         f'mongodb://{config["MONGODB_USER"]}:'
         f'{config["MONGODB_PASSWORD"]}@{config["MONGODB_HOST"]}:'
@@ -54,9 +50,25 @@ def create_app():
             "ping"
         )  # The ping command is cheap and does not require auth.
         print(" *", "Connected to MongoDB!")  # if we get here, the connection worked!
+        app.connected = True
+        app.db = db
+        app.se4_db = se4_db
     except pymongo.errors.OperationFailure as e:
         # the ping command failed, so the connection is not available.
         print(" * MongoDB connection error:", e)  # debug
+
+
+def create_app():
+    """
+    returns a flask app
+    """
+    # Make flask app
+    app = Flask(__name__)
+    app.secret_key = config["WEBAPP_FLASK_SECRET_KEY"]
+
+    app.connected = False
+
+    app.ensure_sync(connect_to_mongo)(app)
 
     @app.route("/")
     def home():
