@@ -38,7 +38,7 @@ jobs:
       - name: Initalize MongoDB
         timeout-minutes: 5
         run: |
-          mongosh --host localhost:27017 -u admin -p admin --authenticationDatabase admin <<EOF
+          mongosh --host ${{ secrets.MONGODB_HOST }}:27017 -u ${{ secrets.MONGODB_USER }} -p ${{ secrets.MONGODB_PASSWORD }} --authenticationDatabase ${{ secrets.MONGODB_USER }} <<EOF
           EOF
           
       - name: Set up Python ${{ matrix.python-version }}
