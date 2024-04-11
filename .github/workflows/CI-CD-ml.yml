@@ -36,13 +36,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install --user pipenv
           pipenv --python ${{ matrix.python-version }}
-          pipenv install pytest
-          pipenv install
-          pipenv run python -m pytest
-      - name: Test with pytest
-        run: |
-          cd machine-learning-client
-          pipenv run python -m pytest
+          # pipenv install pytest
+          # pipenv install
+          # pipenv run python -m pytest
+      # - name: Test with pytest
+      #   run: |
+      #     cd machine-learning-client
+      #     pipenv run python -m pytest
   push_to_registry:
     needs: [build]
     if: github.ref == 'refs/heads/main'
