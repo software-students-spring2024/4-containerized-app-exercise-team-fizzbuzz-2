@@ -62,6 +62,7 @@ jobs:
           echo ML_FLASK_APP=${{ secrets.ML_FLASK_APP }} >> .env
           echo ML_FLASK_ENV=${{ secrets.ML_FLASK_ENV }} >> .env
           echo ML_FLASK_SECRET_KEY=${{ secrets.ML_FLASK_SECRET_KEY }} >> .env
+          echo MODE=test >> .env
 
           cat .env
           
