@@ -38,7 +38,7 @@ jobs:
       - name: Initalize MongoDB
         timeout-minutes: 5
         run: |
-          mongosh --host localhost:27017 -u admin -p admin --authenticationDatabase admin <<EOF
+          mongosh<<EOF
           db = db.getSiblingDB(${{ secrets.MONGODB_USER }});
           db.createUser({ user: ${{ secrets.MONGODB_USER }}, pwd: ${{ secrets.MONGODB_PASSWORD }}, roles: [{ role: 'readWrite', db: ${{ secrets.MONGODB_USER }} }] })
           EOF
@@ -74,10 +74,10 @@ jobs:
           pipenv install pytest
           pipenv install
           pipenv run python -m pytest
-      # - name: Test with pytest
-      #   run: |
-      #     cd web-app
-      #     pipenv run python -m pytest
+      - name: Test with pytest
+        run: |
+          cd web-app
+          pipenv run python -m pytest
   push_to_registry:
     needs: [build]
     if: github.ref == 'refs/heads/main'
