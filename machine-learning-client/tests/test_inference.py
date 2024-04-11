@@ -29,7 +29,7 @@ def test_inference():
         "hf-internal-testing/librispeech_asr_demo",
         "clean",
         split="validation",
-        trust_remote_code=True
+        trust_remote_code=True,
     )
     returned = speech2textpipeline(dso[0]["audio"]["array"])
     assert returned == [
@@ -54,20 +54,25 @@ def test_none_input():
     transcription = speech2textpipeline(None)
     assert transcription is None
 
+
 # test with multiple audio lengths
 def test_multiple_audio_lengths():
     """
     using hugging face internal testing dataset to generate audio samples
     (both long and short) of about 5 seconds and 30 seconds
     """
-    short_audio = load_dataset("hf-internal-testing/librispeech_asr_demo",
-                                "clean",
-                                split="validation[0:1]",
-                                trust_remote_code=True)
-    long_audio = load_dataset("hf-internal-testing/librispeech_asr_demo",
-                                "clean",
-                                split="validation[5:6]",
-                                trust_remote_code=True)
+    short_audio = load_dataset(
+        "hf-internal-testing/librispeech_asr_demo",
+        "clean",
+        split="validation[0:1]",
+        trust_remote_code=True,
+    )
+    long_audio = load_dataset(
+        "hf-internal-testing/librispeech_asr_demo",
+        "clean",
+        split="validation[5:6]",
+        trust_remote_code=True,
+    )
 
     # transcribe the audio samples using the speech2textpipeline from inference.py
     transcription_short = speech2textpipeline(short_audio[0]["audio"]["array"])
@@ -78,6 +83,7 @@ def test_multiple_audio_lengths():
     assert isinstance(transcription_short, list)
     assert isinstance(transcription_long, list)
     assert len(transcription_short[0]) < len(transcription_long[0])
+
 
 # class Tests:
 #     """Class defines tests"""
